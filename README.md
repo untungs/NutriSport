@@ -1,5 +1,7 @@
 This is a Kotlin Multiplatform project targeting Android, iOS.
 
+* [/androidApp](./androidApp/src/main) contains the Android application entry point. This is where you configure the Android build and keep Android-specific resources (like the `AndroidManifest.xml`).
+
 * [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
   It contains several subfolders:
   - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
@@ -18,11 +20,11 @@ To build and run the development version of the Android app, use the run configu
 in your IDE’s toolbar or build it directly from the terminal:
 - on macOS/Linux
   ```shell
-  ./gradlew :composeApp:assembleDebug
+  ./gradlew :androidApp:assembleDebug
   ```
 - on Windows
   ```shell
-  .\gradlew.bat :composeApp:assembleDebug
+  .\gradlew.bat :androidApp:assembleDebug
   ```
 
 ### Build and Run iOS Application
