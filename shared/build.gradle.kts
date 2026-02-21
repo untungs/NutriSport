@@ -9,9 +9,9 @@ plugins {
 
 kotlin {
     androidLibrary {
-        namespace = "io.untungs.nutrisport.app"
+        namespace = "io.untungs.nutrisport.shared"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
-        
+
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
@@ -19,17 +19,17 @@ kotlin {
             enable = true
         }
     }
-    
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+            baseName = "shared"
             isStatic = true
         }
     }
-    
+
     sourceSets {
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -46,8 +46,3 @@ kotlin {
         }
     }
 }
-
-dependencies {
-    androidRuntimeClasspath(libs.compose.uiTooling)
-}
-
