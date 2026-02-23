@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,10 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.untungs.nutrisport.auth.component.GoogleButton
 import io.untungs.nutrisport.shared.Alpha
-import io.untungs.nutrisport.shared.BebasNeueFont
-import io.untungs.nutrisport.shared.FontSize
-import io.untungs.nutrisport.shared.TextPrimary
-import io.untungs.nutrisport.shared.TextSecondary
+import io.untungs.nutrisport.shared.theme.NutriSportTheme
 import rememberMessageBarState
 
 @Composable
@@ -28,11 +26,6 @@ fun AuthScreen(modifier: Modifier = Modifier) {
 
     Scaffold(modifier = modifier) { padding ->
         ContentWithMessageBar(
-            modifier = Modifier
-                .padding(
-                    top = padding.calculateTopPadding(),
-                    bottom = padding.calculateBottomPadding()
-                ),
             messageBarState = messageBarState,
             errorMaxLines = 2
         ) {
@@ -40,6 +33,10 @@ fun AuthScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(24.dp)
+                    .padding(
+                        top = padding.calculateTopPadding(),
+                        bottom = padding.calculateBottomPadding()
+                    )
             ) {
                 Column(
                     modifier = Modifier
@@ -50,15 +47,13 @@ fun AuthScreen(modifier: Modifier = Modifier) {
                 ) {
                     Text(
                         text = "NUTRISPORT",
-                        fontFamily = BebasNeueFont(),
-                        fontSize = FontSize.EXTRA_LARGE,
-                        color = TextSecondary
+                        style = MaterialTheme.typography.displayLarge,
+                        color = MaterialTheme.colorScheme.secondary
                     )
                     Text(
                         text = "Sign in to continue",
                         modifier = Modifier.alpha(Alpha.HALF),
-                        fontSize = FontSize.EXTRA_REGULAR,
-                        color = TextPrimary
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
 
@@ -73,5 +68,15 @@ fun AuthScreen(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun AuthScreenPreview() {
-    AuthScreen()
+    NutriSportTheme {
+        AuthScreen()
+    }
+}
+
+@Preview
+@Composable
+private fun AuthScreenPreviewDark() {
+    NutriSportTheme(darkTheme = true) {
+        AuthScreen()
+    }
 }

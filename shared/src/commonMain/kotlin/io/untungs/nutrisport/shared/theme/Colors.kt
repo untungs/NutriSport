@@ -1,4 +1,4 @@
-package io.untungs.nutrisport.shared
+package io.untungs.nutrisport.shared.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -11,6 +11,10 @@ val Orange = Color(0xFFF24C00)
 val White = Color(0xFFFFFFFF)
 val Black = Color(0xFF000000)
 val Red = Color(0xFFDD0000)
+
+val DarkBlack = Color(0xFF171717)
+val DarkLighter = Color(0xFF262626)
+val DarkDarker = Color(0xFF404040)
 
 val CategoryYellow = Color(0xFFFFC738)
 val CategoryBlue = Color(0xFF38B3FF)
