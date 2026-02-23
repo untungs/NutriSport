@@ -12,7 +12,8 @@ kotlin {
 
     targets.withType<KotlinNativeTarget> {
         binaries.withType<Framework> {
-            baseName = project.name
+            baseName = "NutriSport"
+            isStatic = true
         }
     }
 }
