@@ -16,9 +16,15 @@ kotlin {
             isStatic = true
         }
     }
-}
 
-dependencies {
-    androidRuntimeClasspath(libs.compose.uiTooling)
-}
+    sourceSets {
+        androidMain.dependencies {
+            implementation(libs.compose.uiTooling)
+        }
 
+        commonMain.dependencies {
+            implementation(project(":shared"))
+            implementation(project(":navigation"))
+        }
+    }
+}
