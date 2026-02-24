@@ -10,11 +10,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mmk.kmpauth.firebase.google.GoogleButtonUiContainerFirebase
 import io.untungs.nutrisport.auth.component.GoogleButton
 import io.untungs.nutrisport.shared.Alpha
 import io.untungs.nutrisport.shared.theme.NutriSportTheme
@@ -23,20 +28,22 @@ import rememberMessageBarState
 @Composable
 fun AuthScreen(modifier: Modifier = Modifier) {
     val messageBarState = rememberMessageBarState()
+    var loadingState by remember { mutableStateOf(false) }
 
     Scaffold(modifier = modifier) { padding ->
         ContentWithMessageBar(
+            modifier = Modifier
+                .padding(
+                    top = padding.calculateTopPadding(),
+                    bottom = padding.calculateBottomPadding()
+                ),
             messageBarState = messageBarState,
-            errorMaxLines = 2
+            errorMaxLines = 2,
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(24.dp)
-                    .padding(
-                        top = padding.calculateTopPadding(),
-                        bottom = padding.calculateBottomPadding()
-                    )
             ) {
                 Column(
                     modifier = Modifier
@@ -57,8 +64,27 @@ fun AuthScreen(modifier: Modifier = Modifier) {
                     )
                 }
 
-                GoogleButton(modifier = Modifier.fillMaxWidth()) {
-
+                GoogleButtonUiContainerFirebase(
+                    linkAccount = false,
+                    onResult = { result ->
+                        loadingState = false
+                        result.onSuccess {
+                            messageBarState.addSuccess("success")
+                        }.onFailure {
+                            if (it.message != "Idtoken is null") {
+                                messageBarState.addError(it.message ?: "Something went wrong")
+                            }
+                        }
+                    }
+                ) {
+                    GoogleButton(
+                        loading = loadingState,
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            loadingState = true
+                            onClick()
+                        }
+                    )
                 }
             }
         }

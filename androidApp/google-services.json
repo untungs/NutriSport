@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "48694069747",
+    "firebase_url": "https://my-munny.firebaseio.com",
+    "project_id": "my-munny",
+    "storage_bucket": "my-munny.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:48694069747:android:b9cf377e68fcc8248f6a86",
+        "android_client_info": {
+          "package_name": "io.untungs.nutrisport"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "48694069747-fbl25l70oocoor9k3s3qt4n6j3pksard.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.untungs.nutrisport",
+            "certificate_hash": "d44b0ddfdd396e22183b4edd7f65be31f70d57a4"
+          }
+        },
+        {
+          "client_id": "48694069747-1ta21tj2pj21bkmhupenl89agnc8mhc0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpJkO7-XeI5q51h9qlGlwTmqjd27NauMM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "48694069747-1ta21tj2pj21bkmhupenl89agnc8mhc0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "48694069747-4vdoj88vtt582fet39ori18kr5jam2rs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.untungs.nutrisport.NutriSport"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
