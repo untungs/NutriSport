@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
@@ -10,9 +9,9 @@ kotlin {
         namespace = "io.untungs.nutrisport.app"
     }
 
-    targets.withType<KotlinNativeTarget> {
-        binaries.withType<Framework> {
-            baseName = "NutriSport"
+    targets.withType<KotlinNativeTarget>().configureEach {
+        binaries.framework {
+            baseName = "ComposeApp"
             isStatic = true
         }
     }
