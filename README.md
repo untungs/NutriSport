@@ -1,18 +1,58 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# 🚀 NutriSport
 
-* [/androidApp](./androidApp/src/main) contains the Android application entry point. This is where you configure the Android build and keep Android-specific resources (like the `AndroidManifest.xml`).
+[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-orange.svg)](https://kotlinlang.org/lp/compose-multiplatform/)
+[![Status](https://img.shields.io/badge/Status-Under%20Development-blue.svg)](https://github.com/untungs/NutriSport)
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+**NutriSport** is a modern **E-commerce application** designed for selling healthy sports nutrition and wellness products. It serves as a comprehensive learning project utilizing the power of Kotlin Multiplatform (KMP) to deliver a unified experience across **Android and iOS**.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+---
+
+## ✨ Key Features & Learning Goals
+
+This project is built as a deep dive into KMP, leveraging modern best practices:
+
+*   **Cross-Platform UI:** 100% native UI implemented using **Compose Multiplatform**.
+*   **Unified Business Logic:** Core business logic, data handling, and networking shared between platforms.
+*   **Modern Tooling:** Utilizing the latest infrastructure, including **Android Gradle Plugin (AGP) 9** and **Gradle Build Logic Conventions** for improved modularity and build speed.
+*   **Modern Design:** Implementation of a **Dark Theme** based on **Material 3**.
+
+This project is based on the excellent foundation provided by [stevdza-san's online course](https://github.com/stevdza-san/NutriSport), extended with newer architectural patterns and tooling.
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Core Framework** | [Kotlin Multiplatform](https://www.jetbrains.com/kotlin-multiplatform/) | Targets Android and iOS platforms. |
+| **UI Layer** | [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) | Declarative UI for both mobile platforms. |
+| **Concurrency** | [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) | Handling asynchronous operations efficiently. |
+| **Navigation** | [Compose Navigation](https://kotlinlang.org/docs/multiplatform/compose-navigation-routing.html) | Multiplatform navigation routing. |
+| **Dependency Injection**| [Koin](https://insert-koin.io/) | Lightweight, modular DI framework. |
+| **Authentication** | [KMPAuth](https://github.com/mirzemehdi/KMPAuth/) | Shared multiplatform authentication handling. |
+
+---
+
+## 🖼️ Screenshots (Placeholder)
+
+*TBA*
+
+---
+
+## 💡 Getting Started
+
+### Prerequisites
+
+*   Android Studio (latest version recommended)
+*   Xcode (for iOS compilation on macOS)
+*   Kotlin tooling setup
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/untungs/NutriSport.git
+cd NutriSport
+```
 
 ### Build and Run Android Application
 
@@ -32,6 +72,3 @@ in your IDE’s toolbar or build it directly from the terminal:
 To build and run the development version of the iOS app, use the run configuration from the run widget
 in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
 
----
-
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
