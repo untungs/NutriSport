@@ -1,5 +1,6 @@
 plugins {
     id("nutrisport.kmp.compose")
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -9,7 +10,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":feature:auth"))
+            implementation(projects.feature.auth)
+            implementation(libs.compose.navigation)
         }
     }
 }
