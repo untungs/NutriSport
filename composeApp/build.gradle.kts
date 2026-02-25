@@ -22,8 +22,9 @@ kotlin {
         }
 
         commonMain.dependencies {
-            implementation(project(":shared"))
-            implementation(project(":navigation"))
+            implementation(projects.shared)
+            implementation(projects.navigation)
+            implementation(projects.di)
             implementation(libs.kmpauth.google)
         }
     }

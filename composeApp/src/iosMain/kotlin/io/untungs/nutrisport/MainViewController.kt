@@ -1,5 +1,8 @@
 package io.untungs.nutrisport
 
 import androidx.compose.ui.window.ComposeUIViewController
+import io.untungs.nutrisport.di.initializeKoin
 
-fun MainViewController() = ComposeUIViewController { App() }
+fun MainViewController() = ComposeUIViewController(
+    configure = { initializeKoin() }
+) { App() }
