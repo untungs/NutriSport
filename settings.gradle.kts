@@ -29,9 +29,9 @@ dependencyResolutionManagement {
     }
 }
 
-include(":di")
-include(":composeApp")
-include(":navigation")
 include(":androidApp")
-include(":shared")
+include(":composeApp")
+include(":core:ui")
+include(":core:di")
+include(":core:navigation")
 include(":feature:auth")

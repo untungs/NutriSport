@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.mmk.kmpauth.firebase.google.GoogleButtonUiContainerFirebase
 import dev.gitlive.firebase.auth.FirebaseUser
 import io.untungs.nutrisport.auth.component.GoogleButton
-import io.untungs.nutrisport.shared.Alpha
-import io.untungs.nutrisport.shared.theme.NutriSportTheme
+import io.untungs.nutrisport.core.ui.Alpha
+import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
 import rememberMessageBarState
 
 @Composable

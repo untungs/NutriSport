@@ -27,8 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import io.untungs.nutrisport.shared.Image
-import io.untungs.nutrisport.shared.theme.NutriSportTheme
+import io.untungs.nutrisport.core.ui.Image
+import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource

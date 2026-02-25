@@ -15,7 +15,7 @@ kotlin {
         }
 
         commonMain.dependencies {
-            implementation(projects.shared)
+            implementation(projects.core.ui)
             implementation(libs.kmpauth.firebase)
             implementation(libs.kmpauth.google)
             implementation(libs.messagebar.kmp)
