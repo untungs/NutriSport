@@ -10,9 +10,13 @@ val lightScheme = lightColorScheme(
     primary = Yellowish,
     secondary = Orange,
     surface = White,
-    onSurface = TextPrimary,
+    onSurface = Black,
     surfaceBright = GrayLighter,
-    outline = GrayDarker
+    outline = GrayDarker,
+    primaryContainer = Yellowish,
+    onPrimaryContainer = Black,
+    errorContainer = Red,
+    onErrorContainer = White,
 )
 
 val darkScheme = darkColorScheme(
@@ -21,7 +25,11 @@ val darkScheme = darkColorScheme(
     surface = DarkBlack,
     onSurface = White,
     surfaceBright = DarkLighter,
-    outline = DarkDarker
+    outline = DarkDarker,
+    primaryContainer = Yellowish,
+    onPrimaryContainer = Black,
+    errorContainer = Red,
+    onErrorContainer = White,
 )
 
 @Composable

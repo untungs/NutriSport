@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mmk.kmpauth.firebase.google.GoogleButtonUiContainerFirebase
+import dev.gitlive.firebase.auth.FirebaseUser
 import io.untungs.nutrisport.auth.component.GoogleButton
 import io.untungs.nutrisport.shared.Alpha
 import io.untungs.nutrisport.shared.theme.NutriSportTheme
@@ -28,7 +29,6 @@ import rememberMessageBarState
 @Composable
 fun AuthScreen(modifier: Modifier = Modifier) {
     val messageBarState = rememberMessageBarState()
-    var loadingState by remember { mutableStateOf(false) }
 
     Scaffold(modifier = modifier) { padding ->
         ContentWithMessageBar(
@@ -64,30 +64,49 @@ fun AuthScreen(modifier: Modifier = Modifier) {
                     )
                 }
 
-                GoogleButtonUiContainerFirebase(
-                    linkAccount = false,
-                    onResult = { result ->
-                        loadingState = false
-                        result.onSuccess {
-                            messageBarState.addSuccess("success")
-                        }.onFailure {
-                            if (it.message != "Idtoken is null") {
-                                messageBarState.addError(it.message ?: "Something went wrong")
-                            }
+                SignInButton { result ->
+                    result.onSuccess { user ->
+                        if (user != null) {
+                            messageBarState.addSuccess("Signed in successfully")
                         }
+                    }.onFailure {
+                        messageBarState.addError(it.message ?: "Something went wrong")
                     }
-                ) {
-                    GoogleButton(
-                        loading = loadingState,
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            loadingState = true
-                            onClick()
-                        }
-                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun SignInButton(onResult: (Result<FirebaseUser?>) -> Unit) {
+    var isLoading by remember { mutableStateOf(false) }
+
+    GoogleButtonUiContainerFirebase(
+        linkAccount = false,
+        onResult = { result ->
+            isLoading = false
+
+            result.onSuccess {
+                onResult(Result.success(it))
+            }.onFailure {
+                if (it.message == "Idtoken is null") {
+                    // sign in is cancelled, do nothing
+                    onResult(Result.success(null))
+                } else {
+                    onResult(Result.failure(it))
+                }
+            }
+        }
+    ) {
+        GoogleButton(
+            loading = isLoading,
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                isLoading = true
+                onClick()
+            }
+        )
     }
 }
 
