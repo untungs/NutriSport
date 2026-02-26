@@ -8,14 +8,9 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(project.dependencies.platform(libs.firebase.bom))
-            implementation(libs.firebase.auth)
-            implementation(libs.compose.uiTooling)
-        }
-
         commonMain.dependencies {
             implementation(projects.core.ui)
+            implementation(project.dependencies.platform(libs.firebase.bom))
             implementation(libs.kmpauth.firebase)
             implementation(libs.kmpauth.google)
             implementation(libs.messagebar.kmp)

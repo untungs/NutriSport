@@ -1,46 +1,26 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
+import nutrisport.kmp.libs
 
 plugins {
-    id("org.jetbrains.kotlin.multiplatform")
-    id("com.android.kotlin.multiplatform.library")
+    id("nutrisport.kmp.library")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
-val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-
-fun KotlinDependencyHandler.lib(name: String) =
-    implementation(libs.findLibrary(name).get())
-
 kotlin {
-    androidLibrary {
-        compileSdk = libs.findVersion("android-compileSdk").get().requiredVersion.toInt()
-
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-        androidResources {
-            enable = true
-        }
-    }
-
-    iosArm64()
-    iosSimulatorArm64()
-
     sourceSets {
-        commonMain.dependencies {
-            lib("compose.runtime")
-            lib("compose.foundation")
-            lib("compose.material3")
-            lib("compose.ui")
-            lib("compose.components.resources")
-            lib("compose.uiToolingPreview")
-            lib("androidx.lifecycle.viewmodelCompose")
-            lib("androidx.lifecycle.runtimeCompose")
+        androidMain.dependencies {
+            implementation(libs("compose.uiTooling"))
         }
-        commonTest.dependencies {
-            lib("kotlin.test")
+
+        commonMain.dependencies {
+            implementation(libs("compose.runtime"))
+            implementation(libs("compose.foundation"))
+            implementation(libs("compose.material3"))
+            implementation(libs("compose.ui"))
+            implementation(libs("compose.components.resources"))
+            implementation(libs("compose.uiToolingPreview"))
+            implementation(libs("androidx.lifecycle.viewmodelCompose"))
+            implementation(libs("androidx.lifecycle.runtimeCompose"))
         }
     }
 }
