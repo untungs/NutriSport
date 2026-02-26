@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mmk.kmpauth.firebase.google.GoogleButtonUiContainerFirebase
@@ -82,31 +83,41 @@ fun AuthScreen(modifier: Modifier = Modifier) {
 private fun SignInButton(onResult: (Result<FirebaseUser?>) -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
 
-    GoogleButtonUiContainerFirebase(
-        linkAccount = false,
-        onResult = { result ->
-            isLoading = false
+    val handleResult: (Result<FirebaseUser?>) -> Unit = { result ->
+        isLoading = false
 
-            result.onSuccess {
-                onResult(Result.success(it))
-            }.onFailure {
-                if (it.message == "Idtoken is null") {
-                    // sign in is cancelled, do nothing
-                    onResult(Result.success(null))
-                } else {
-                    onResult(Result.failure(it))
-                }
+        result.onSuccess {
+            onResult(Result.success(it))
+        }.onFailure {
+            if (it.message == "Idtoken is null") {
+                // sign in is cancelled, do nothing
+                onResult(Result.success(null))
+            } else {
+                onResult(Result.failure(it))
             }
         }
-    ) {
+    }
+
+    if (LocalInspectionMode.current) {
         GoogleButton(
             loading = isLoading,
             modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                isLoading = true
-                onClick()
-            }
+            onClick = {}
         )
+    } else {
+        GoogleButtonUiContainerFirebase(
+            linkAccount = false,
+            onResult = handleResult
+        ) {
+            GoogleButton(
+                loading = isLoading,
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    isLoading = true
+                    onClick()
+                }
+            )
+        }
     }
 }
 

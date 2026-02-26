@@ -35,7 +35,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun GoogleButton(
+internal fun GoogleButton(
     modifier: Modifier = Modifier,
     loading: Boolean = false,
     primaryText: String = "Sign in with Google",
