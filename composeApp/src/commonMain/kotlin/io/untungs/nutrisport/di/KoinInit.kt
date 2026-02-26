@@ -1,4 +1,4 @@
-package io.untungs.nutrisport.core.di
+package io.untungs.nutrisport.di
 
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin

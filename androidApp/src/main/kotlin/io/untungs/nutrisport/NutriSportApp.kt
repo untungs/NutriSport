@@ -1,7 +1,7 @@
 package io.untungs.nutrisport
 
 import android.app.Application
-import io.untungs.nutrisport.core.di.initializeKoin
+import io.untungs.nutrisport.di.initializeKoin
 import org.koin.android.ext.koin.androidContext
 
 class NutriSportApp : Application() {

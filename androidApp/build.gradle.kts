@@ -34,7 +34,6 @@ android {
 
 dependencies {
     implementation(projects.composeApp)
-    implementation(projects.core.di)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.compose.uiToolingPreview)
