@@ -1,6 +1,7 @@
 package io.untungs.nutrisport.auth
 
 import ContentWithMessageBar
+import MessageBarState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,13 +27,40 @@ import dev.gitlive.firebase.auth.FirebaseUser
 import io.untungs.nutrisport.auth.component.GoogleButton
 import io.untungs.nutrisport.core.ui.Alpha
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
+import org.koin.compose.viewmodel.koinViewModel
 import rememberMessageBarState
 
 @Composable
-fun AuthScreen(modifier: Modifier = Modifier) {
+fun AuthRoute(
+    viewModel: AuthViewModel = koinViewModel()
+) {
     val messageBarState = rememberMessageBarState()
 
-    Scaffold(modifier = modifier) { padding ->
+    LaunchedEffect(viewModel) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is AuthEvent.Success -> {
+                    messageBarState.addSuccess("Signed in successfully as ${event.displayName}")
+                }
+                is AuthEvent.Error -> {
+                    messageBarState.addError(event.message)
+                }
+            }
+        }
+    }
+
+    AuthScreen(
+        messageBarState = messageBarState,
+        onSignInResult = viewModel::onSignInResult
+    )
+}
+
+@Composable
+fun AuthScreen(
+    messageBarState: MessageBarState,
+    onSignInResult: (Result<FirebaseUser?>) -> Unit
+) {
+    Scaffold { padding ->
         ContentWithMessageBar(
             modifier = Modifier
                 .padding(
@@ -65,15 +94,7 @@ fun AuthScreen(modifier: Modifier = Modifier) {
                     )
                 }
 
-                SignInButton { result ->
-                    result.onSuccess { user ->
-                        if (user != null) {
-                            messageBarState.addSuccess("Signed in successfully")
-                        }
-                    }.onFailure {
-                        messageBarState.addError(it.message ?: "Something went wrong")
-                    }
-                }
+                SignInButton(onResult = onSignInResult)
             }
         }
     }
@@ -85,17 +106,7 @@ private fun SignInButton(onResult: (Result<FirebaseUser?>) -> Unit) {
 
     val handleResult: (Result<FirebaseUser?>) -> Unit = { result ->
         isLoading = false
-
-        result.onSuccess {
-            onResult(Result.success(it))
-        }.onFailure {
-            if (it.message == "Idtoken is null") {
-                // sign in is cancelled, do nothing
-                onResult(Result.success(null))
-            } else {
-                onResult(Result.failure(it))
-            }
-        }
+        onResult(result)
     }
 
     if (LocalInspectionMode.current) {
@@ -125,7 +136,10 @@ private fun SignInButton(onResult: (Result<FirebaseUser?>) -> Unit) {
 @Composable
 private fun AuthScreenPreview() {
     NutriSportTheme {
-        AuthScreen()
+        AuthScreen(
+            messageBarState = rememberMessageBarState(),
+            onSignInResult = {}
+        )
     }
 }
 
@@ -133,6 +147,9 @@ private fun AuthScreenPreview() {
 @Composable
 private fun AuthScreenPreviewDark() {
     NutriSportTheme(darkTheme = true) {
-        AuthScreen()
+        AuthScreen(
+            messageBarState = rememberMessageBarState(),
+            onSignInResult = {}
+        )
     }
 }

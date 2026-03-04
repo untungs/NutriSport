@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import io.untungs.nutrisport.auth.AuthScreen
+import io.untungs.nutrisport.auth.AuthRoute
 
 @Composable
 fun SetupNavGraph() {
@@ -15,7 +15,7 @@ fun SetupNavGraph() {
         startDestination = Screen.Auth
     ) {
         composable<Screen.Auth> {
-            AuthScreen()
+            AuthRoute()
         }
     }
 }

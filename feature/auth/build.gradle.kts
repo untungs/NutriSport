@@ -8,11 +8,16 @@ kotlin {
     }
 
     sourceSets {
+        androidMain.dependencies {
+            implementation(project.dependencies.platform(libs.firebase.bom))
+        }
+
         commonMain.dependencies {
             implementation(projects.core.ui)
-            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(projects.core.domain)
             implementation(libs.kmpauth.firebase)
             implementation(libs.kmpauth.google)
+            implementation(libs.koin.compose.viewmodel)
             implementation(libs.messagebar.kmp)
         }
     }
