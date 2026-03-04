@@ -9,14 +9,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.mmk.kmpauth.google.GoogleAuthCredentials
 import com.mmk.kmpauth.google.GoogleAuthProvider
 import io.untungs.nutrisport.core.navigation.SetupNavGraph
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
 
 @Composable
-@Preview
 fun App() {
     NutriSportTheme {
         var isReady by remember { mutableStateOf(false) }

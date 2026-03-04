@@ -7,11 +7,11 @@ plugins {
 }
 
 kotlin {
-    sourceSets {
-        androidMain.dependencies {
-            implementation(libs("compose.uiTooling"))
-        }
+    androidLibrary {
+        androidResources.enable = true
+    }
 
+    sourceSets {
         commonMain.dependencies {
             implementation(libs("compose.runtime"))
             implementation(libs("compose.foundation"))
@@ -23,4 +23,8 @@ kotlin {
             implementation(libs("androidx.lifecycle.runtimeCompose"))
         }
     }
+}
+
+dependencies {
+    androidRuntimeClasspath(libs("compose.uiTooling"))
 }
