@@ -1,25 +1,17 @@
 package io.untungs.nutrisport.auth
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dev.gitlive.firebase.auth.FirebaseUser
 import io.untungs.nutrisport.core.domain.usecase.CreateCustomerUseCase
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
+import io.untungs.nutrisport.core.ui.AppCoroutineScope
+import io.untungs.nutrisport.core.ui.AppMessageManager
 import kotlinx.coroutines.launch
 
-sealed interface AuthEvent {
-    data class Success(val displayName: String) : AuthEvent
-    data class Error(val message: String) : AuthEvent
-}
-
 class AuthViewModel(
-    private val createCustomer: CreateCustomerUseCase
+    private val createCustomer: CreateCustomerUseCase,
+    private val appScope: AppCoroutineScope,
+    private val appMessageManager: AppMessageManager
 ) : ViewModel() {
-
-    private val _events = Channel<AuthEvent>()
-    val events: Flow<AuthEvent> = _events.receiveAsFlow()
 
     fun onSignInResult(result: Result<FirebaseUser?>) {
         result.onSuccess { user ->
@@ -27,27 +19,25 @@ class AuthViewModel(
                 handleSignInSuccess(user)
             }
         }.onFailure { exception ->
-            viewModelScope.launch {
-                val errorMessage = if (exception.message == "Idtoken is null") {
-                    "Sign in canceled or no internet connection"
-                } else {
-                    exception.message ?: "Something went wrong"
-                }
-                _events.send(AuthEvent.Error(errorMessage))
+            val errorMessage = if (exception.message == "Idtoken is null") {
+                "Sign in canceled or no internet connection"
+            } else {
+                exception.message ?: "Something went wrong"
             }
+            appMessageManager.showError(errorMessage)
         }
     }
 
     private fun handleSignInSuccess(user: FirebaseUser) {
-        viewModelScope.launch {
+        appScope.launch {
             createCustomer(
                 id = user.uid,
                 displayName = user.displayName ?: "",
                 email = user.email ?: ""
             ).onSuccess {
-                _events.send(AuthEvent.Success(user.displayName ?: ""))
+                appMessageManager.showSuccess("Signed in successfully as ${user.displayName}")
             }.onFailure { exception ->
-                _events.send(AuthEvent.Error(exception.message ?: "Failed to create customer"))
+                appMessageManager.showError(exception.message ?: "Failed to create customer")
             }
         }
     }

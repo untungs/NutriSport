@@ -26,6 +26,7 @@ kotlin {
             implementation(libs.kmpauth.google)
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.messagebar.kmp)
         }
     }
 }

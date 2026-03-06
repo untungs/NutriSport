@@ -18,7 +18,6 @@ kotlin {
             implementation(libs.kmpauth.firebase)
             implementation(libs.kmpauth.google)
             implementation(libs.koin.compose.viewmodel)
-            implementation(libs.messagebar.kmp)
         }
     }
 }
