@@ -14,6 +14,7 @@ fun initializeKoin(
         modules(
             domainModule,
             dataModule,
+            appModule,
             featureAuthModule,
         )
     }

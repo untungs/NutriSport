@@ -11,6 +11,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.auth)
+            implementation(projects.feature.home)
             implementation(libs.compose.navigation)
         }
     }

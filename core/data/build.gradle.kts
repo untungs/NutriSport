@@ -14,6 +14,7 @@ kotlin {
 
         commonMain.dependencies {
             implementation(projects.core.domain)
+            implementation(libs.firebase.auth)
             implementation(libs.firebase.firestore)
             implementation(libs.koin.core)
         }
