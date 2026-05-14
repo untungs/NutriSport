@@ -1,10 +1,11 @@
-package io.untungs.nutrisport.core.navigation
+package io.untungs.nutrisport.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.untungs.nutrisport.auth.AuthRoute
+import io.untungs.nutrisport.core.navigation.Screen
 import io.untungs.nutrisport.home.HomeGraphScreen
 
 @Composable

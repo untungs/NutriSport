@@ -9,7 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.untungs.nutrisport.core.navigation.SetupNavGraph
+import io.untungs.nutrisport.navigation.SetupNavGraph
 import io.untungs.nutrisport.core.ui.AppMessage
 import io.untungs.nutrisport.core.ui.AppMessageManager
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme

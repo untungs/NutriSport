@@ -22,7 +22,11 @@ kotlin {
             implementation(projects.core.data)
             implementation(projects.core.ui)
             implementation(projects.core.navigation)
+
             implementation(projects.feature.auth)
+            implementation(projects.feature.home)
+
+            implementation(libs.compose.navigation)
             implementation(libs.kmpauth.google)
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)

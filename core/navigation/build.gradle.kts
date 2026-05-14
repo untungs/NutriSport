@@ -1,5 +1,5 @@
 plugins {
-    id("nutrisport.kmp.compose")
+    id("nutrisport.kmp.library")
     alias(libs.plugins.kotlinSerialization)
 }
 
@@ -10,9 +10,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.auth)
-            implementation(projects.feature.home)
-            implementation(libs.compose.navigation)
+            implementation(libs.kotlinx.serialization.json)
         }
     }
 }
