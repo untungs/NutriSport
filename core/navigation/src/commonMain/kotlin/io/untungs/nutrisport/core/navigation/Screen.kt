@@ -8,4 +8,12 @@ sealed class Screen {
     data object Auth: Screen()
     @Serializable
     data object HomeGraph: Screen()
+
+    // bottom bar
+    @Serializable
+    data object ProductsOverview: Screen()
+    @Serializable
+    data object Cart: Screen()
+    @Serializable
+    data object Categories: Screen()
 }
