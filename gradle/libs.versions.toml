@@ -14,7 +14,7 @@ kotlin = "2.3.10"
 kotlinxSerializationJson = "1.10.0"
 kotlinxCoroutines = "1.10.2"
 material3 = "1.10.0-alpha05"
-messagebar = "1.0.9"
+messagebar = "main-SNAPSHOT"
 google-services = "4.4.4"
 firebase-bom = "34.9.0"
 firebase-gitlive = "2.4.0"
@@ -46,7 +46,7 @@ firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = 
 kmpauth-firebase = { module = "io.github.mirzemehdi:kmpauth-firebase", version.ref = "kmpauth" }
 kmpauth-google = { module = "io.github.mirzemehdi:kmpauth-google", version.ref = "kmpauth" }
 
-messagebar-kmp = { module = "com.stevdza-san:messagebarkmp", version.ref = "messagebar" }
+messagebar-kmp = { group = "com.github.untungs.MessageBar-KMP", name = "messagebarkmp", version.ref = "messagebar" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }

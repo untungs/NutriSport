@@ -6,10 +6,11 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -71,7 +72,7 @@ fun HomeGraphScreen() {
             targetValue = if (drawerState.isOpened()) 0.9f else 1f
         )
 
-        CustomDrawer()
+        CustomDrawer(modifier = Modifier.systemBarsPadding())
         Box(
             modifier = Modifier.fillMaxSize()
                 .clip(RoundedCornerShape(animatedRadius))
@@ -116,6 +117,7 @@ fun ContentScaffold(
         bottomBar = {
             Box(
                 modifier = Modifier.padding(12.dp)
+                    .navigationBarsPadding()
             ) {
                 BottomBar(
                     selected = selectedDestination,
@@ -134,7 +136,6 @@ fun ContentScaffold(
         },
         topBar = {
             CenterAlignedTopAppBar(
-                windowInsets = WindowInsets(0, 0, 0, 0),
                 title = {
                     AnimatedContent(selectedDestination) {
                         Text(

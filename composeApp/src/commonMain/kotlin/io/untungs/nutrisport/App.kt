@@ -1,10 +1,10 @@
 package io.untungs.nutrisport
 
 import ContentWithMessageBar
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,24 +36,15 @@ fun App(
             }
         }
 
-        Scaffold(
+        ContentWithMessageBar(
             modifier = Modifier.fillMaxSize(),
-            containerColor = MaterialTheme.colorScheme.surface,
-        ) { padding ->
-            ContentWithMessageBar(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        top = padding.calculateTopPadding(),
-                        bottom = padding.calculateBottomPadding()
-                    ),
-                messageBarState = messageBarState,
-                errorMaxLines = 2
-            ) {
-                val destination = startDestination
-                if (destination != null) {
-                    SetupNavGraph(destination)
-                }
+            visibilityOffset = WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
+            messageBarState = messageBarState,
+            errorMaxLines = 2
+        ) {
+            val destination = startDestination
+            if (destination != null) {
+                SetupNavGraph(destination)
             }
         }
     }
