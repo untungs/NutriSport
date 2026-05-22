@@ -25,6 +25,7 @@ kotlin {
 
             implementation(projects.feature.auth)
             implementation(projects.feature.home)
+            implementation(projects.feature.profile)
 
             implementation(libs.compose.navigation)
             implementation(libs.kmpauth.google)

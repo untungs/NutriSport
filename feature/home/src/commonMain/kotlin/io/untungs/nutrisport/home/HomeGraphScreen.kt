@@ -51,14 +51,21 @@ import io.untungs.nutrisport.home.domain.toggle
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun HomeGraphRoute(viewModel: HomeGraphViewModel = koinViewModel()) {
+fun HomeGraphRoute(
+    onProfileClick: () -> Unit,
+    viewModel: HomeGraphViewModel = koinViewModel()
+) {
     HomeGraphScreen(
+        onProfileClick = onProfileClick,
         onSignOutClick = viewModel::signOut
     )
 }
 
 @Composable
-fun HomeGraphScreen(onSignOutClick: () -> Unit) {
+fun HomeGraphScreen(
+    onProfileClick: () -> Unit,
+    onSignOutClick: () -> Unit
+) {
     Box(
         modifier = Modifier.background(MaterialTheme.colorScheme.surfaceBright)
     ) {
@@ -78,6 +85,7 @@ fun HomeGraphScreen(onSignOutClick: () -> Unit) {
 
         CustomDrawer(
             modifier = Modifier.systemBarsPadding(),
+            onProfileClick = onProfileClick,
             onSignOutClick = onSignOutClick
         )
 
@@ -119,7 +127,6 @@ private fun ContentScaffold(
     }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.surface,
         bottomBar = {
             Box(
                 modifier = Modifier.padding(12.dp)
@@ -179,6 +186,9 @@ private fun ContentScaffold(
 @Composable
 private fun HomeGraphScreenPreview() {
     NutriSportTheme(darkTheme = true) {
-        HomeGraphScreen {}
+        HomeGraphScreen(
+            onProfileClick = {},
+            onSignOutClick = {}
+        )
     }
 }
