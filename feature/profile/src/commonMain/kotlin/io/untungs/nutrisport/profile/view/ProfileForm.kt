@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.untungs.nutrisport.core.domain.model.Country
 import io.untungs.nutrisport.core.ui.component.CustomTextField
 
 @Composable
@@ -27,6 +28,12 @@ fun ProfileForm(
     phoneNumber: String?,
     onPhoneNumberChange: (String) -> Unit,
 ) {
+    CountryPickerDialog(
+        country = Country.INDONESIA,
+        onConfirmClick = {},
+        onDismiss = {}
+    )
+
     Column(
         modifier = modifier
             .padding(horizontal = 24.dp, vertical = 12.dp)
