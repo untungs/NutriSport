@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icon.Check: ImageVector
+val Icons.Check: ImageVector
     get() {
         if (_Check != null) {
             return _Check!!

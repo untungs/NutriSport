@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icon.Grid: ImageVector
+val Icons.Grid: ImageVector
     get() {
         if (_Grid != null) {
             return _Grid!!

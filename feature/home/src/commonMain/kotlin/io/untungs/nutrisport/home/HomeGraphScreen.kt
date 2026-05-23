@@ -38,7 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import io.untungs.nutrisport.core.navigation.Screen
 import io.untungs.nutrisport.core.ui.Alpha
 import io.untungs.nutrisport.core.ui.icons.Close
-import io.untungs.nutrisport.core.ui.icons.Icon
+import io.untungs.nutrisport.core.ui.icons.Icons
 import io.untungs.nutrisport.core.ui.icons.Menu
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
 import io.untungs.nutrisport.core.ui.util.getScreenWidth
@@ -160,7 +160,7 @@ private fun ContentScaffold(
                 navigationIcon = {
                     IconButton(onClick = onMenuClick) {
                         Icon(
-                            imageVector = if (drawerState.isOpened()) Icon.Close else Icon.Menu,
+                            imageVector = if (drawerState.isOpened()) Icons.Close else Icons.Menu,
                             contentDescription = "Menu Icon"
                         )
                     }

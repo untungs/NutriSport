@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icon.RightArrow: ImageVector
+val Icons.RightArrow: ImageVector
     get() {
         if (_RightArrow != null) {
             return _RightArrow!!

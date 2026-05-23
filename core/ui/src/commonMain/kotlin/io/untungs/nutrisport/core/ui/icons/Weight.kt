@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icon.Weight: ImageVector
+val Icons.Weight: ImageVector
     get() {
         if (_Weight != null) {
             return _Weight!!
