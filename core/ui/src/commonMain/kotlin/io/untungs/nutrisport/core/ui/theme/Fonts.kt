@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.sp
 import nutrisport.core.ui.generated.resources.Res
 import nutrisport.core.ui.generated.resources.bebas_neue_regular
 import nutrisport.core.ui.generated.resources.roboto_condensed_medium
+import nutrisport.core.ui.generated.resources.roboto_medium
 import nutrisport.core.ui.generated.resources.roboto_regular
 import org.jetbrains.compose.resources.Font
 
@@ -17,6 +18,9 @@ fun BebasNeueFont() = FontFamily(Font(Res.font.bebas_neue_regular))
 
 @Composable
 fun RobotoFont() = FontFamily(Font(Res.font.roboto_regular))
+
+@Composable
+fun RobotoMediumFont() = FontFamily(Font(Res.font.roboto_medium))
 
 @Composable
 fun RobotoCondensedFont() = FontFamily(
@@ -58,7 +62,7 @@ fun Typography() = Typography(
         fontSize = FontSize.EXTRA_REGULAR
     ),
     bodyMedium = TextStyle(
-        fontFamily = RobotoFont(),
+        fontFamily = RobotoMediumFont(),
         fontSize = FontSize.REGULAR
     ),
     bodySmall = TextStyle(

@@ -22,10 +22,8 @@ import io.untungs.nutrisport.core.ui.component.CustomTextField
 @Composable
 fun ProfileForm(
     modifier: Modifier = Modifier,
-    firstName: String,
-    onFirstNameChange: (String) -> Unit,
-    lastName: String,
-    onLastNameChange: (String) -> Unit,
+    displayName: String,
+    onDisplayNameChange: (String) -> Unit,
     email: String,
     country: Country,
     onCountrySelected: (Country) -> Unit,
@@ -52,22 +50,14 @@ fun ProfileForm(
     }
 
     Column(
-        modifier = modifier
-            .padding(horizontal = 24.dp, vertical = 12.dp)
-            .verticalScroll(rememberScrollState()),
+        modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         CustomTextField(
-            value = firstName,
-            onValueChange = onFirstNameChange,
-            placeholder = "First Name",
-            isError = firstName.length !in 3..50
-        )
-        CustomTextField(
-            value = lastName,
-            onValueChange = onLastNameChange,
-            placeholder = "Last Name",
-            isError = lastName.length !in 3..50
+            value = displayName,
+            onValueChange = onDisplayNameChange,
+            placeholder = "Name",
+            isError = displayName.length !in 3..50
         )
         CustomTextField(
             value = email,
@@ -85,7 +75,7 @@ fun ProfileForm(
             value = postalCode?.toString().orEmpty(),
             onValueChange = { onPostalCodeChange(it.toIntOrNull()) },
             placeholder = "Postal Code",
-            isError = postalCode.toString().length !in 3..8
+            isError = postalCode == null || postalCode.toString().length !in 3..8
         )
         CustomTextField(
             value = address.orEmpty(),
