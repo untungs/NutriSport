@@ -2,13 +2,21 @@ package io.untungs.nutrisport.profile.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.untungs.nutrisport.core.domain.model.Country
+import io.untungs.nutrisport.core.ui.component.AlertTextField
 import io.untungs.nutrisport.core.ui.component.CustomTextField
 
 @Composable
@@ -19,6 +27,8 @@ fun ProfileForm(
     lastName: String,
     onLastNameChange: (String) -> Unit,
     email: String,
+    country: Country,
+    onCountrySelected: (Country) -> Unit,
     city: String?,
     onCityChange: (String) -> Unit,
     postalCode: Int?,
@@ -28,11 +38,18 @@ fun ProfileForm(
     phoneNumber: String?,
     onPhoneNumberChange: (String) -> Unit,
 ) {
-    CountryPickerDialog(
-        country = Country.INDONESIA,
-        onConfirmClick = {},
-        onDismiss = {}
-    )
+    var showCountryDialog by remember { mutableStateOf(false) }
+
+    if (showCountryDialog) {
+        CountryPickerDialog(
+            country = country,
+            onConfirmClick = {
+                onCountrySelected(it)
+                showCountryDialog = false
+            },
+            onDismiss = { showCountryDialog = false }
+        )
+    }
 
     Column(
         modifier = modifier
@@ -76,11 +93,28 @@ fun ProfileForm(
             placeholder = "Address",
             isError = address?.length !in 3..50
         )
-        CustomTextField(
-            value = phoneNumber.orEmpty(),
-            onValueChange = onPhoneNumberChange,
-            placeholder = "Phone Number",
-            isError = phoneNumber?.length !in 5..30
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            AlertTextField(
+                text = "+${country.dialCode}",
+                icon = {
+                    CountryImage(
+                        country,
+                        modifier = Modifier.size(14.dp)
+                    )
+                },
+                onClick = {
+                    showCountryDialog = true
+                }
+            )
+            CustomTextField(
+                value = phoneNumber.orEmpty(),
+                onValueChange = onPhoneNumberChange,
+                placeholder = "Phone Number",
+                isError = phoneNumber?.length !in 5..30
+            )
+        }
     }
 }

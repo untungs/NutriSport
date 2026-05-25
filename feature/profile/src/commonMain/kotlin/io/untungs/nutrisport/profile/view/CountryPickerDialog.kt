@@ -177,16 +177,8 @@ private fun CountryPicker(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            modifier = Modifier
-                .clip(CircleShape)
-                .border(
-                    width = 0.5.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = CircleShape
-                ),
-            imageVector = country.flagIcon,
-            contentDescription = "Country flag icon",
+        CountryImage(
+            country = country,
             colorFilter = ColorFilter.colorMatrix(colorMatrix)
         )
         Text(

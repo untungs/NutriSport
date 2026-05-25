@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import io.untungs.nutrisport.core.domain.model.Country
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
 import io.untungs.nutrisport.profile.view.ProfileForm
 
@@ -18,6 +19,7 @@ fun ProfileScreen() {
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+    var country by remember { mutableStateOf(Country.INDONESIA) }
     var city by remember { mutableStateOf("") }
     var postalCode: Int? by remember { mutableStateOf(0) }
     var address by remember { mutableStateOf("") }
@@ -33,6 +35,8 @@ fun ProfileScreen() {
                 lastName = lastName,
                 onLastNameChange = { lastName = it },
                 email = email,
+                country = country,
+                onCountrySelected = { country = it },
                 city = city,
                 onCityChange = { city = it },
                 postalCode = postalCode,
