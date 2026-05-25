@@ -11,6 +11,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.domain)
             implementation(projects.core.ui)
+            implementation(libs.koin.compose.viewmodel)
         }
     }
 }
