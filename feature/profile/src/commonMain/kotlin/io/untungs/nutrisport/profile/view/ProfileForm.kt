@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -16,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.untungs.nutrisport.core.domain.model.Country
-import io.untungs.nutrisport.core.ui.component.AlertTextField
 import io.untungs.nutrisport.core.ui.component.CustomTextField
 
 @Composable
@@ -97,12 +97,14 @@ fun ProfileForm(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            AlertTextField(
-                text = "+${country.dialCode}",
-                icon = {
+            CustomTextField(
+                modifier = Modifier.width(100.dp),
+                value = "+${country.dialCode}",
+                onValueChange = {},
+                leadingIcon = {
                     CountryImage(
                         country,
-                        modifier = Modifier.size(14.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                 },
                 onClick = {
@@ -110,6 +112,7 @@ fun ProfileForm(
                 }
             )
             CustomTextField(
+                modifier = Modifier.weight(1f),
                 value = phoneNumber.orEmpty(),
                 onValueChange = onPhoneNumberChange,
                 placeholder = "Phone Number",
