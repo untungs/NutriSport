@@ -2,15 +2,15 @@ package io.untungs.nutrisport.core.domain.usecase
 
 import io.untungs.nutrisport.core.domain.model.Customer
 import io.untungs.nutrisport.core.domain.repository.CustomerRepository
+import kotlinx.coroutines.withTimeout
 
-class CreateCustomerUseCase(
+class UpdateCustomerUseCase(
     private val customerRepository: CustomerRepository
 ) {
-    suspend operator fun invoke(id: String, displayName: String, email: String): Result<Unit> {
+    suspend operator fun invoke(customer: Customer): Result<Unit> {
         return runCatching {
-            val isCustomerExist = customerRepository.isCustomerExist(id)
-            if (!isCustomerExist) {
-                val customer = Customer(id, displayName, email)
+            // Enforce a timeout so the UI doesn't hang indefinitely offline
+            withTimeout(10000L) {
                 customerRepository.saveCustomer(customer)
             }
         }

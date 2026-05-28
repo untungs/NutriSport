@@ -3,9 +3,7 @@ package io.untungs.nutrisport.profile.view
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,16 +35,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.untungs.nutrisport.core.domain.model.Country
 import io.untungs.nutrisport.core.ui.component.CustomTextField
+import io.untungs.nutrisport.core.ui.component.ErrorCard
 import io.untungs.nutrisport.core.ui.icons.Check
 import io.untungs.nutrisport.core.ui.icons.Icons
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
-import io.untungs.nutrisport.profile.util.flagIcon
 
 @Composable
 fun CountryPickerDialog(
@@ -138,16 +135,10 @@ private fun CountryPickerDialogContent(
                 }
             }
         } else {
-            Box(
+            ErrorCard(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "No results found for \"$searchQuery\"",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+                message = "No results found for \"$searchQuery\""
+            )
         }
     }
 }

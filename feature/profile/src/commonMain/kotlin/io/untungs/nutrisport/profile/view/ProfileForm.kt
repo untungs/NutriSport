@@ -3,7 +3,6 @@ package io.untungs.nutrisport.profile.view
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -21,30 +20,38 @@ import androidx.compose.ui.unit.dp
 import io.untungs.nutrisport.core.domain.model.Country
 import io.untungs.nutrisport.core.ui.component.CustomTextField
 
+data class ProfileFormState(
+    val displayName: String = "",
+    val email: String = "",
+    val country: Country = Country.INDONESIA,
+    val city: String? = null,
+    val postalCode: Int? = null,
+    val address: String? = null,
+    val phoneNumber: String = "",
+)
+
+interface ProfileFormAction {
+    fun onDisplayNameChange(value: String)
+    fun onCityChange(value: String)
+    fun onPostalCodeChange(value: Int?)
+    fun onAddressChange(value: String)
+    fun onCountrySelected(value: Country)
+    fun onPhoneNumberChange(value: String)
+}
+
 @Composable
 fun ProfileForm(
+    state: ProfileFormState,
+    action: ProfileFormAction,
     modifier: Modifier = Modifier,
-    displayName: String,
-    onDisplayNameChange: (String) -> Unit,
-    email: String,
-    country: Country,
-    onCountrySelected: (Country) -> Unit,
-    city: String?,
-    onCityChange: (String) -> Unit,
-    postalCode: Int?,
-    onPostalCodeChange: (Int?) -> Unit,
-    address: String?,
-    onAddressChange: (String) -> Unit,
-    phoneNumber: String?,
-    onPhoneNumberChange: (String) -> Unit,
 ) {
     var showCountryDialog by remember { mutableStateOf(false) }
 
     if (showCountryDialog) {
         CountryPickerDialog(
-            country = country,
+            country = state.country,
             onConfirmClick = {
-                onCountrySelected(it)
+                action.onCountrySelected(it)
                 showCountryDialog = false
             },
             onDismiss = { showCountryDialog = false }
@@ -56,37 +63,37 @@ fun ProfileForm(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         CustomTextField(
-            value = displayName,
-            onValueChange = onDisplayNameChange,
+            value = state.displayName,
+            onValueChange = action::onDisplayNameChange,
             placeholder = "Name",
-            isError = displayName.length !in 3..50
+            isError = state.displayName.length !in 3..50
         )
         CustomTextField(
-            value = email,
+            value = state.email,
             onValueChange = {},
             placeholder = "Email",
             enabled = false
         )
         CustomTextField(
-            value = city.orEmpty(),
-            onValueChange = onCityChange,
+            value = state.city.orEmpty(),
+            onValueChange = action::onCityChange,
             placeholder = "City",
-            isError = city?.length !in 3..50
+            isError = state.city?.length !in 3..50
         )
         CustomTextField(
-            value = postalCode?.toString().orEmpty(),
-            onValueChange = { onPostalCodeChange(it.toIntOrNull()) },
+            value = state.postalCode?.toString().orEmpty(),
+            onValueChange = { action.onPostalCodeChange(it.toIntOrNull()) },
             placeholder = "Postal Code",
-            isError = postalCode == null || postalCode.toString().length !in 3..8,
+            isError = state.postalCode == null || state.postalCode.toString().length !in 3..8,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             )
         )
         CustomTextField(
-            value = address.orEmpty(),
-            onValueChange = onAddressChange,
+            value = state.address.orEmpty(),
+            onValueChange = action::onAddressChange,
             placeholder = "Address",
-            isError = address?.length !in 3..50
+            isError = state.address?.length !in 3..50
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -94,11 +101,11 @@ fun ProfileForm(
         ) {
             CustomTextField(
                 modifier = Modifier.width(100.dp),
-                value = "+${country.dialCode}",
+                value = "+${state.country.dialCode}",
                 onValueChange = {},
                 leadingIcon = {
                     CountryImage(
-                        country,
+                        state.country,
                         modifier = Modifier.size(20.dp)
                     )
                 },
@@ -108,10 +115,10 @@ fun ProfileForm(
             )
             CustomTextField(
                 modifier = Modifier.weight(1f),
-                value = phoneNumber.orEmpty(),
-                onValueChange = onPhoneNumberChange,
+                value = state.phoneNumber,
+                onValueChange = action::onPhoneNumberChange,
                 placeholder = "Phone Number",
-                isError = phoneNumber?.length !in 5..30,
+                isError = state.phoneNumber.length !in 5..30,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 )

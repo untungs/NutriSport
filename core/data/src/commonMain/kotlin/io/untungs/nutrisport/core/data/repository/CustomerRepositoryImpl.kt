@@ -16,7 +16,7 @@ class CustomerRepositoryImpl : CustomerRepository {
         return Firebase.firestore.collection(CUSTOMER_COLLECTION).document(id).get().exists
     }
 
-    override suspend fun createCustomer(customer: Customer) {
+    override suspend fun saveCustomer(customer: Customer) {
         Firebase.firestore.collection(CUSTOMER_COLLECTION).document(customer.id).set(customer)
     }
 

@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface CustomerRepository {
     suspend fun isCustomerExist(id: String): Boolean
-    suspend fun createCustomer(customer: Customer)
+    suspend fun saveCustomer(customer: Customer)
     fun getCustomerFlow(): Flow<Result<Customer>>
 }

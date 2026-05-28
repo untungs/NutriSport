@@ -7,7 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import io.untungs.nutrisport.auth.AuthRoute
 import io.untungs.nutrisport.core.navigation.Screen
 import io.untungs.nutrisport.home.HomeGraphRoute
-import io.untungs.nutrisport.profile.ProfileScreen
+import io.untungs.nutrisport.profile.ProfileRoute
 
 @Composable
 fun SetupNavGraph(startDestination: Screen = Screen.Auth) {
@@ -28,7 +28,7 @@ fun SetupNavGraph(startDestination: Screen = Screen.Auth) {
             )
         }
         composable<Screen.Profile> {
-            ProfileScreen(
+            ProfileRoute(
                 navigateBack = {
                     navController.popBackStack()
                 }
