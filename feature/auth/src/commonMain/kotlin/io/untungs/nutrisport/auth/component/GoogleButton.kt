@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -27,7 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import io.untungs.nutrisport.core.ui.Image
+import io.untungs.nutrisport.core.ui.Images
+import io.untungs.nutrisport.core.ui.component.CustomProgressIndicator
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -40,9 +40,8 @@ internal fun GoogleButton(
     loading: Boolean = false,
     primaryText: String = "Sign in with Google",
     secondaryText: String = "Please wait...",
-    icon: DrawableResource = Image.GoogleLogo,
+    icon: DrawableResource = Images.GoogleLogo,
     backgroundColor: Color = MaterialTheme.colorScheme.surfaceBright,
-    progressIndicatorColor: Color = MaterialTheme.colorScheme.secondary,
     onClick: () -> Unit,
 ) {
     val buttonText = if (loading) secondaryText else primaryText
@@ -68,10 +67,9 @@ internal fun GoogleButton(
                 label = "button_content_anim"
             ) { isLoading ->
                 if (isLoading) {
-                    CircularProgressIndicator(
+                    CustomProgressIndicator(
                         modifier = Modifier.size(24.dp),
                         strokeWidth = 2.dp,
-                        color = progressIndicatorColor
                     )
                 } else {
                     Icon(

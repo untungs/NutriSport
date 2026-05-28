@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,9 +42,8 @@ fun PrimaryButton(
         ),
     ) {
         if (isLoading) {
-            CircularProgressIndicator(
+            CustomProgressIndicator(
                 modifier = Modifier.size(16.dp),
-                color = MaterialTheme.colorScheme.onPrimary,
                 strokeWidth = 2.dp
             )
             Spacer(modifier = Modifier.width(12.dp))

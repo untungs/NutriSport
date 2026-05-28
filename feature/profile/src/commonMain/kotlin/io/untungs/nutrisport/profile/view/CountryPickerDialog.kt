@@ -40,7 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.untungs.nutrisport.core.domain.model.Country
 import io.untungs.nutrisport.core.ui.component.CustomTextField
-import io.untungs.nutrisport.core.ui.component.ErrorCard
+import io.untungs.nutrisport.core.ui.component.InfoCard
 import io.untungs.nutrisport.core.ui.icons.Check
 import io.untungs.nutrisport.core.ui.icons.Icons
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
@@ -135,9 +135,10 @@ private fun CountryPickerDialogContent(
                 }
             }
         } else {
-            ErrorCard(
+            InfoCard(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
-                message = "No results found for \"$searchQuery\""
+                image = null,
+                subtitle = "No results found for \"$searchQuery\""
             )
         }
     }

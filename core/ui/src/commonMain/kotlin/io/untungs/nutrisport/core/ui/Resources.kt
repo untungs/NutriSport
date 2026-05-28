@@ -7,7 +7,7 @@ import nutrisport.core.ui.generated.resources.google_logo
 import nutrisport.core.ui.generated.resources.paypal_logo
 import nutrisport.core.ui.generated.resources.shopping_cart_image
 
-object Image {
+object Images {
     val ShoppingCart = Res.drawable.shopping_cart_image
     val Checkmark = Res.drawable.checkmark_image
     val Cat = Res.drawable.cat

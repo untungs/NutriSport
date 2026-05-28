@@ -8,8 +8,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import nutrisport.core.ui.generated.resources.Res
 import nutrisport.core.ui.generated.resources.bebas_neue_regular
+import nutrisport.core.ui.generated.resources.roboto_bold
 import nutrisport.core.ui.generated.resources.roboto_condensed_medium
-import nutrisport.core.ui.generated.resources.roboto_medium
 import nutrisport.core.ui.generated.resources.roboto_regular
 import org.jetbrains.compose.resources.Font
 
@@ -17,10 +17,10 @@ import org.jetbrains.compose.resources.Font
 fun BebasNeueFont() = FontFamily(Font(Res.font.bebas_neue_regular))
 
 @Composable
-fun RobotoFont() = FontFamily(Font(Res.font.roboto_regular))
-
-@Composable
-fun RobotoMediumFont() = FontFamily(Font(Res.font.roboto_medium))
+fun RobotoFont() = FontFamily(
+    Font(Res.font.roboto_regular, weight = FontWeight.Normal),
+    Font(Res.font.roboto_bold, weight = FontWeight.Bold)
+)
 
 @Composable
 fun RobotoCondensedFont() = FontFamily(
@@ -56,13 +56,19 @@ fun Typography() = Typography(
     titleMedium = TextStyle(
         fontFamily = BebasNeueFont(),
         fontSize = FontSize.EXTRA_MEDIUM,
+        fontWeight = FontWeight.Bold
+    ),
+    titleSmall = TextStyle(
+        fontFamily = RobotoFont(),
+        fontSize = FontSize.MEDIUM,
+        fontWeight = FontWeight.Bold
     ),
     bodyLarge = TextStyle(
         fontFamily = RobotoFont(),
         fontSize = FontSize.EXTRA_REGULAR
     ),
     bodyMedium = TextStyle(
-        fontFamily = RobotoMediumFont(),
+        fontFamily = RobotoFont(),
         fontSize = FontSize.REGULAR
     ),
     bodySmall = TextStyle(

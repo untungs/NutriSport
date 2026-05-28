@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,7 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.untungs.nutrisport.core.domain.model.Country
-import io.untungs.nutrisport.core.ui.component.ErrorCard
+import io.untungs.nutrisport.core.ui.component.CustomProgressIndicator
+import io.untungs.nutrisport.core.ui.component.InfoCard
 import io.untungs.nutrisport.core.ui.component.PrimaryButton
 import io.untungs.nutrisport.core.ui.icons.BackArrow
 import io.untungs.nutrisport.core.ui.icons.Check
@@ -80,12 +80,13 @@ private fun ProfileScreen(
         ) {
             when {
                 state.isLoading -> {
-                    CircularProgressIndicator()
+                    CustomProgressIndicator()
                 }
                 state.errorMessage.isNotBlank() -> {
-                    ErrorCard(
+                    InfoCard(
                         modifier = Modifier.padding(24.dp),
-                        message = state.errorMessage
+                        title = "Oops!",
+                        subtitle = state.errorMessage
                     )
                 }
                 else -> {
