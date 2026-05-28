@@ -28,7 +28,20 @@ data class ProfileFormState(
     val postalCode: Int? = null,
     val address: String? = null,
     val phoneNumber: String = "",
-)
+) {
+    val isDisplayNameValid: Boolean get() = displayName.length in 3..50
+    val isCityValid: Boolean get() = city?.length in 3..50
+    val isPostalCodeValid: Boolean get() = postalCode != null && postalCode.toString().length in 3..8
+    val isAddressValid: Boolean get() = address?.length in 3..50
+    val isPhoneNumberValid: Boolean get() = phoneNumber.length in 5..30
+
+    val isFormValid: Boolean
+        get() = isDisplayNameValid &&
+                isCityValid &&
+                isPostalCodeValid &&
+                isAddressValid &&
+                isPhoneNumberValid
+}
 
 interface ProfileFormAction {
     fun onDisplayNameChange(value: String)
@@ -66,7 +79,7 @@ fun ProfileForm(
             value = state.displayName,
             onValueChange = action::onDisplayNameChange,
             placeholder = "Name",
-            isError = state.displayName.length !in 3..50
+            isError = !state.isDisplayNameValid
         )
         CustomTextField(
             value = state.email,
@@ -78,13 +91,13 @@ fun ProfileForm(
             value = state.city.orEmpty(),
             onValueChange = action::onCityChange,
             placeholder = "City",
-            isError = state.city?.length !in 3..50
+            isError = !state.isCityValid
         )
         CustomTextField(
             value = state.postalCode?.toString().orEmpty(),
             onValueChange = { action.onPostalCodeChange(it.toIntOrNull()) },
             placeholder = "Postal Code",
-            isError = state.postalCode == null || state.postalCode.toString().length !in 3..8,
+            isError = !state.isPostalCodeValid,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             )
@@ -93,7 +106,7 @@ fun ProfileForm(
             value = state.address.orEmpty(),
             onValueChange = action::onAddressChange,
             placeholder = "Address",
-            isError = state.address?.length !in 3..50
+            isError = !state.isAddressValid
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -118,7 +131,7 @@ fun ProfileForm(
                 value = state.phoneNumber,
                 onValueChange = action::onPhoneNumberChange,
                 placeholder = "Phone Number",
-                isError = state.phoneNumber.length !in 5..30,
+                isError = !state.isPhoneNumberValid,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 )

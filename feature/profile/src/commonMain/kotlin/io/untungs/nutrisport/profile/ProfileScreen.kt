@@ -95,7 +95,8 @@ private fun ProfileScreen(
                             .padding(horizontal = 24.dp, vertical = 12.dp)
                     ) {
                         ProfileForm(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier.weight(1f)
+                                .padding(bottom = 12.dp),
                             state = state.formState,
                             action = action
                         )
@@ -104,6 +105,7 @@ private fun ProfileScreen(
                             modifier = Modifier.fillMaxWidth(),
                             text = "Update",
                             icon = Icons.Check,
+                            enabled = state.formState.isFormValid,
                             isLoading = state.isUpdating
                         ) {
                             onUpdateClick()
