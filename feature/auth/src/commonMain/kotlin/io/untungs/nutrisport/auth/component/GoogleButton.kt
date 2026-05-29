@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import io.untungs.nutrisport.core.ui.Images
+import io.untungs.nutrisport.core.ui.images.Images
 import io.untungs.nutrisport.core.ui.component.CustomProgressIndicator
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
 import kotlinx.coroutines.delay

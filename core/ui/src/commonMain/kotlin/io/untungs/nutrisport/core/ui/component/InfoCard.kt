@@ -12,17 +12,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
-import io.untungs.nutrisport.core.ui.Images
+import io.untungs.nutrisport.core.ui.images.rememberCatPainter
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun InfoCard(
     modifier: Modifier = Modifier,
-    image: DrawableResource? = Images.Cat,
+    image: Painter? = rememberCatPainter(),
     title: String? = null,
     subtitle: String,
 ) {
@@ -37,7 +36,7 @@ fun InfoCard(
                 modifier = Modifier
                     .padding(24.dp)
                     .size(60.dp),
-                painter = painterResource(image),
+                painter = image,
                 contentDescription = "Info card image"
             )
         }
@@ -58,7 +57,7 @@ fun InfoCard(
 @Preview
 @Composable
 private fun InfoCardPreview() {
-    NutriSportTheme {
+    NutriSportTheme(darkTheme = true) {
         Surface {
             InfoCard(
                 title = "Oops!",
