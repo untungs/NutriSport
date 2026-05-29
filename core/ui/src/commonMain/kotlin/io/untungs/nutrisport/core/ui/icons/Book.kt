@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icon.Book: ImageVector
+val Icons.Book: ImageVector
     get() {
         if (_Book != null) {
             return _Book!!

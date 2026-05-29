@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icon.Plus: ImageVector
+val Icons.Plus: ImageVector
     get() {
         if (_Plus != null) {
             return _Plus!!

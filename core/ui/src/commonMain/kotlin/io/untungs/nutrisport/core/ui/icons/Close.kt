@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icon.Close: ImageVector
+val Icons.Close: ImageVector
     get() {
         if (_Close != null) {
             return _Close!!

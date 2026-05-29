@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icon.LogIn: ImageVector
+val Icons.LogIn: ImageVector
     get() {
         if (_LogIn != null) {
             return _LogIn!!

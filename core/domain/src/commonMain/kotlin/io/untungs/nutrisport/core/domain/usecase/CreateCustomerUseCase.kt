@@ -11,7 +11,7 @@ class CreateCustomerUseCase(
             val isCustomerExist = customerRepository.isCustomerExist(id)
             if (!isCustomerExist) {
                 val customer = Customer(id, displayName, email)
-                customerRepository.createCustomer(customer)
+                customerRepository.saveCustomer(customer)
             }
         }
     }

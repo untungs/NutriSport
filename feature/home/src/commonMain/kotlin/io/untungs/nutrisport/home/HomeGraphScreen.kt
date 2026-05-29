@@ -38,7 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import io.untungs.nutrisport.core.navigation.Screen
 import io.untungs.nutrisport.core.ui.Alpha
 import io.untungs.nutrisport.core.ui.icons.Close
-import io.untungs.nutrisport.core.ui.icons.Icon
+import io.untungs.nutrisport.core.ui.icons.Icons
 import io.untungs.nutrisport.core.ui.icons.Menu
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
 import io.untungs.nutrisport.core.ui.util.getScreenWidth
@@ -51,14 +51,21 @@ import io.untungs.nutrisport.home.domain.toggle
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun HomeGraphRoute(viewModel: HomeGraphViewModel = koinViewModel()) {
+fun HomeGraphRoute(
+    onProfileClick: () -> Unit,
+    viewModel: HomeGraphViewModel = koinViewModel()
+) {
     HomeGraphScreen(
+        onProfileClick = onProfileClick,
         onSignOutClick = viewModel::signOut
     )
 }
 
 @Composable
-fun HomeGraphScreen(onSignOutClick: () -> Unit) {
+fun HomeGraphScreen(
+    onProfileClick: () -> Unit,
+    onSignOutClick: () -> Unit
+) {
     Box(
         modifier = Modifier.background(MaterialTheme.colorScheme.surfaceBright)
     ) {
@@ -78,6 +85,7 @@ fun HomeGraphScreen(onSignOutClick: () -> Unit) {
 
         CustomDrawer(
             modifier = Modifier.systemBarsPadding(),
+            onProfileClick = onProfileClick,
             onSignOutClick = onSignOutClick
         )
 
@@ -119,7 +127,6 @@ private fun ContentScaffold(
     }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.surface,
         bottomBar = {
             Box(
                 modifier = Modifier.padding(12.dp)
@@ -153,7 +160,7 @@ private fun ContentScaffold(
                 navigationIcon = {
                     IconButton(onClick = onMenuClick) {
                         Icon(
-                            imageVector = if (drawerState.isOpened()) Icon.Close else Icon.Menu,
+                            imageVector = if (drawerState.isOpened()) Icons.Close else Icons.Menu,
                             contentDescription = "Menu Icon"
                         )
                     }
@@ -179,6 +186,9 @@ private fun ContentScaffold(
 @Composable
 private fun HomeGraphScreenPreview() {
     NutriSportTheme(darkTheme = true) {
-        HomeGraphScreen {}
+        HomeGraphScreen(
+            onProfileClick = {},
+            onSignOutClick = {}
+        )
     }
 }

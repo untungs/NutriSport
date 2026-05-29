@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icon.Menu: ImageVector
+val Icons.Menu: ImageVector
     get() {
         if (_Menu != null) {
             return _Menu!!

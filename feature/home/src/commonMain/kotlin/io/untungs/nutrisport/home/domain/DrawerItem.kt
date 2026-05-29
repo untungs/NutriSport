@@ -3,7 +3,7 @@ package io.untungs.nutrisport.home.domain
 import androidx.compose.ui.graphics.vector.ImageVector
 import io.untungs.nutrisport.core.ui.icons.Book
 import io.untungs.nutrisport.core.ui.icons.Edit
-import io.untungs.nutrisport.core.ui.icons.Icon
+import io.untungs.nutrisport.core.ui.icons.Icons
 import io.untungs.nutrisport.core.ui.icons.LogOut
 import io.untungs.nutrisport.core.ui.icons.MapPin
 import io.untungs.nutrisport.core.ui.icons.Unlock
@@ -15,26 +15,26 @@ enum class DrawerItem(
 ) {
     Profile(
         title = "Profile",
-        icon = Icon.User
+        icon = Icons.User
     ),
     Blog(
         title = "Blog",
-        icon = Icon.Book
+        icon = Icons.Book
     ),
     Locations(
         title = "Locations",
-        icon = Icon.MapPin
+        icon = Icons.MapPin
     ),
     Contact(
         title = "Contact us",
-        icon = Icon.Edit
+        icon = Icons.Edit
     ),
     SignOut(
         title = "Sign out",
-        icon = Icon.LogOut
+        icon = Icons.LogOut
     ),
     Admin(
         title = "Admin",
-        icon = Icon.Unlock
+        icon = Icons.Unlock
     ),
 }

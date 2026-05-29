@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icon.Edit: ImageVector
+val Icons.Edit: ImageVector
     get() {
         if (_Edit != null) {
             return _Edit!!

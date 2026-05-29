@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icon.Unlock: ImageVector
+val Icons.Unlock: ImageVector
     get() {
         if (_Unlock != null) {
             return _Unlock!!

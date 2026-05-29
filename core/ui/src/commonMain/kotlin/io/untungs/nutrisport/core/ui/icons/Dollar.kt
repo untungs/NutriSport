@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icon.Dollar: ImageVector
+val Icons.Dollar: ImageVector
     get() {
         if (_Dollar != null) {
             return _Dollar!!
