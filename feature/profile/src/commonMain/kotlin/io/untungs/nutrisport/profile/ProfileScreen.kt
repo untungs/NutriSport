@@ -10,13 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,7 +22,7 @@ import io.untungs.nutrisport.core.domain.model.Country
 import io.untungs.nutrisport.core.ui.component.CustomProgressIndicator
 import io.untungs.nutrisport.core.ui.component.InfoCard
 import io.untungs.nutrisport.core.ui.component.PrimaryButton
-import io.untungs.nutrisport.core.ui.icons.BackArrow
+import io.untungs.nutrisport.core.ui.component.PrimaryTopAppBar
 import io.untungs.nutrisport.core.ui.icons.Check
 import io.untungs.nutrisport.core.ui.icons.Icons
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
@@ -51,7 +45,6 @@ fun ProfileRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProfileScreen(
     state: ProfileScreenState,
@@ -61,20 +54,10 @@ private fun ProfileScreen(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text("My Profile", style = MaterialTheme.typography.displayMedium)
-                },
-                navigationIcon = {
-                    IconButton(onClick = navigateBack) {
-                        Icon(
-                            imageVector = Icons.BackArrow,
-                            contentDescription = "Back"
-                        )
-                    }
-                }
+            PrimaryTopAppBar(
+                title = "My Profile",
+                onBackClick = navigateBack
             )
-
         },
         // safeDrawing ensures innerPadding includes status/nav bars, camera cutouts,
         // and importantly, the keyboard height (IME) when it's open.

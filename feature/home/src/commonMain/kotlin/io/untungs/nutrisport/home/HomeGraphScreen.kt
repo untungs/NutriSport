@@ -49,18 +49,21 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeGraphRoute(
+    viewModel: HomeGraphViewModel = koinViewModel(),
     onProfileClick: () -> Unit,
-    viewModel: HomeGraphViewModel = koinViewModel()
+    onAdminPanelClick: () -> Unit,
 ) {
     HomeGraphScreen(
         onProfileClick = onProfileClick,
-        onSignOutClick = viewModel::signOut
+        onAdminPanelClick = onAdminPanelClick,
+        onSignOutClick = viewModel::signOut,
     )
 }
 
 @Composable
 fun HomeGraphScreen(
     onProfileClick: () -> Unit,
+    onAdminPanelClick: () -> Unit,
     onSignOutClick: () -> Unit
 ) {
     BoxWithConstraints(
@@ -85,7 +88,8 @@ fun HomeGraphScreen(
                 .width(offsetValue)
                 .safeDrawingPadding(),
             onProfileClick = onProfileClick,
-            onSignOutClick = onSignOutClick
+            onSignOutClick = onSignOutClick,
+            onAdminPanelClick = onAdminPanelClick,
         )
 
         Box(
@@ -188,6 +192,7 @@ private fun HomeGraphScreenPreview() {
     NutriSportTheme(darkTheme = true) {
         HomeGraphScreen(
             onProfileClick = {},
+            onAdminPanelClick = {},
             onSignOutClick = {}
         )
     }

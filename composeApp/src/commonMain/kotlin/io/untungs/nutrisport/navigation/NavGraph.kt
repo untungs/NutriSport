@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import io.untungs.nutrisport.admin.AdminPanelRoute
 import io.untungs.nutrisport.auth.AuthRoute
 import io.untungs.nutrisport.core.navigation.Screen
 import io.untungs.nutrisport.home.HomeGraphRoute
@@ -24,11 +25,21 @@ fun SetupNavGraph(startDestination: Screen = Screen.Auth) {
             HomeGraphRoute(
                 onProfileClick = {
                     navController.navigate(Screen.Profile)
+                },
+                onAdminPanelClick = {
+                    navController.navigate(Screen.AdminPanel)
                 }
             )
         }
         composable<Screen.Profile> {
             ProfileRoute(
+                navigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable<Screen.AdminPanel> {
+            AdminPanelRoute(
                 navigateBack = {
                     navController.popBackStack()
                 }
