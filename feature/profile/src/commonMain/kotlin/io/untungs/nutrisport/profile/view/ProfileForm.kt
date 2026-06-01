@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,7 +54,6 @@ interface ProfileFormAction {
 fun ProfileForm(
     state: ProfileFormState,
     action: ProfileFormAction,
-    modifier: Modifier = Modifier,
 ) {
     var showCountryDialog by remember { mutableStateOf(false) }
 
@@ -72,7 +69,6 @@ fun ProfileForm(
     }
 
     Column(
-        modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         CustomTextField(

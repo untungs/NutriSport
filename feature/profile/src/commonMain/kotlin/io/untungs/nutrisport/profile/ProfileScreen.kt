@@ -2,9 +2,14 @@ package io.untungs.nutrisport.profile
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -70,7 +75,10 @@ private fun ProfileScreen(
                 }
             )
 
-        }
+        },
+        // safeDrawing ensures innerPadding includes status/nav bars, camera cutouts,
+        // and importantly, the keyboard height (IME) when it's open.
+        contentWindowInsets = WindowInsets.safeDrawing
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -93,17 +101,20 @@ private fun ProfileScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
                             .padding(horizontal = 24.dp, vertical = 12.dp)
                     ) {
                         ProfileForm(
-                            modifier = Modifier.weight(1f)
-                                .padding(bottom = 12.dp),
                             state = state.formState,
                             action = action
                         )
 
+                        Spacer(modifier = Modifier.weight(1f))
+
                         PrimaryButton(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 12.dp),
                             text = "Update",
                             icon = Icons.Check,
                             enabled = state.formState.isFormValid,

@@ -9,9 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NutriSport.Splash">
+        <!-- windowSoftInputMode="adjustResize" is REQUIRED for edge-to-edge Compose apps.
+             It tells the OS to resize the window height when the keyboard appears,
+             enabling proper Inset handling (imePadding) instead of shifting the whole window. -->
         <activity
             android:exported="true"
-            android:name=".MainActivity">
+            android:name=".MainActivity"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
