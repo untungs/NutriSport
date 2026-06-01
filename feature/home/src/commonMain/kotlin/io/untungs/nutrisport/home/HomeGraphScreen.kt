@@ -5,11 +5,11 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,10 +25,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -41,7 +39,6 @@ import io.untungs.nutrisport.core.ui.icons.Close
 import io.untungs.nutrisport.core.ui.icons.Icons
 import io.untungs.nutrisport.core.ui.icons.Menu
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
-import io.untungs.nutrisport.core.ui.util.getScreenWidth
 import io.untungs.nutrisport.home.component.BottomBar
 import io.untungs.nutrisport.home.component.CustomDrawer
 import io.untungs.nutrisport.home.domain.BottomBarDestination
@@ -66,13 +63,13 @@ fun HomeGraphScreen(
     onProfileClick: () -> Unit,
     onSignOutClick: () -> Unit
 ) {
-    Box(
+    BoxWithConstraints(
         modifier = Modifier.background(MaterialTheme.colorScheme.surfaceBright)
     ) {
-        val screenWidth = remember { getScreenWidth() }
+        val screenWidth = maxWidth
         var drawerState by remember { mutableStateOf(CustomDrawerState.Closed) }
 
-        val offsetValue by remember { derivedStateOf { (screenWidth / 1.5).dp } }
+        val offsetValue = (screenWidth / 1.5f).coerceAtMost(300.dp)
         val animatedOffset by animateDpAsState(
             targetValue = if (drawerState.isOpened()) offsetValue else 0.dp
         )
@@ -84,22 +81,25 @@ fun HomeGraphScreen(
         )
 
         CustomDrawer(
-            modifier = Modifier.systemBarsPadding(),
+            modifier = Modifier
+                .width(offsetValue)
+                .safeDrawingPadding(),
             onProfileClick = onProfileClick,
             onSignOutClick = onSignOutClick
         )
 
         Box(
             modifier = Modifier.fillMaxSize()
-                .clip(RoundedCornerShape(animatedRadius))
-                .offset(animatedOffset)
-                .scale(animatedScale)
-                .shadow(
-                    elevation = 20.dp,
-                    shape = RoundedCornerShape(animatedRadius),
-                    ambientColor = Color.Black.copy(alpha = Alpha.TEN_PERCENT),
-                    spotColor = Color.Black.copy(alpha = Alpha.TEN_PERCENT),
-                )
+                .graphicsLayer {
+                    translationX = animatedOffset.toPx()
+                    scaleX = animatedScale
+                    scaleY = animatedScale
+                    shadowElevation = 20.dp.toPx()
+                    shape = RoundedCornerShape(animatedRadius)
+                    clip = true
+                    ambientShadowColor = Color.Black.copy(alpha = Alpha.TEN_PERCENT)
+                    spotShadowColor = Color.Black.copy(alpha = Alpha.TEN_PERCENT)
+                }
         ) {
             ContentScaffold(
                 drawerState = drawerState,
@@ -130,7 +130,7 @@ private fun ContentScaffold(
         bottomBar = {
             Box(
                 modifier = Modifier.padding(12.dp)
-                    .navigationBarsPadding()
+                    .safeDrawingPadding()
             ) {
                 BottomBar(
                     selected = selectedDestination,

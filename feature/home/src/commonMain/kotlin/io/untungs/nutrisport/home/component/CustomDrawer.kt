@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,33 +27,32 @@ fun CustomDrawer(
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .fillMaxWidth(0.6f)
             .padding(horizontal = 12.dp)
     ) {
-        Spacer(modifier = Modifier.height(50.dp))
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Spacer(modifier = Modifier.height(50.dp))
 
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "NUTRISPORT",
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.displayLarge,
-            color = MaterialTheme.colorScheme.secondary
-        )
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Healthy Lifestyle",
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "NUTRISPORT",
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.displayLarge,
+                color = MaterialTheme.colorScheme.secondary
+            )
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Healthy Lifestyle",
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface
+            )
 
-        Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(50.dp))
 
-        DrawerItem.entries.forEach {
-            if (it == DrawerItem.Admin) {
-                Spacer(modifier = Modifier.weight(1f))
-
-                DrawerItemCard(it, onAdminPanelClick)
-            } else {
+            DrawerItem.entries.filter { it != DrawerItem.Admin }.forEach {
                 DrawerItemCard(it) {
                     when (it) {
                         DrawerItem.Profile -> onProfileClick()
@@ -59,6 +60,7 @@ fun CustomDrawer(
                         DrawerItem.Locations -> {}
                         DrawerItem.Contact -> onContactUsClick()
                         DrawerItem.SignOut -> onSignOutClick()
+                        else -> {}
                     }
                 }
 
@@ -66,6 +68,7 @@ fun CustomDrawer(
             }
         }
 
+        DrawerItemCard(DrawerItem.Admin, onAdminPanelClick)
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
