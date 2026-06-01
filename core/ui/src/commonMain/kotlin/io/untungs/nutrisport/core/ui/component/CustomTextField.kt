@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +36,7 @@ fun CustomTextField(
     isError: Boolean = false,
     singleLine: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     onClick: (() -> Unit)? = null
 ) {
     val borderColor by animateColorAsState(
@@ -61,6 +63,7 @@ fun CustomTextField(
             singleLine = singleLine,
             shape = RoundedCornerShape(6.dp),
             keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceBright,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceBright,
