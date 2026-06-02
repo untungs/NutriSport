@@ -115,8 +115,7 @@ fun ProfileForm(
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(
                 onNext = {
-                    // Double-jump focus to bypass the non-editable country code selector
-                    focusManager.moveFocus(FocusDirection.Next)
+                    // Bypass the non-editable country code selector
                     focusManager.moveFocus(FocusDirection.Next)
                 }
             )

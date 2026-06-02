@@ -18,7 +18,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,13 +50,27 @@ fun CustomTextField(
 
     val isClickable = onClick != null
 
-    Box(modifier = modifier) {
+    Box(
+        modifier = modifier.then(
+            if (isClickable) {
+                Modifier.semantics { role = Role.Button }
+            } else Modifier
+        ),
+        propagateMinConstraints = true
+    ) {
         TextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
                 .fillMaxWidth()
-                .border(width = 1.dp, color = borderColor, shape = RoundedCornerShape(6.dp)),
+                .border(width = 1.dp, color = borderColor, shape = RoundedCornerShape(6.dp))
+                .then(
+                    if (isClickable) {
+                        Modifier
+                            .focusProperties { canFocus = false }
+                            .clearAndSetSemantics { }
+                    } else Modifier
+                ),
             enabled = enabled,
             readOnly = isClickable,
             leadingIcon = leadingIcon,
