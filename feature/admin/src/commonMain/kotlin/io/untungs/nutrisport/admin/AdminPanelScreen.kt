@@ -18,13 +18,15 @@ import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
 @Composable
 fun AdminPanelRoute(
     navigateBack: () -> Unit,
+    navigateToManageProduct: (String?) -> Unit,
 ) {
-    AdminPanelScreen(navigateBack)
+    AdminPanelScreen(navigateBack, navigateToManageProduct)
 }
 
 @Composable
 private fun AdminPanelScreen(
     navigateBack: () -> Unit,
+    navigateToManageProduct: (String?) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -39,7 +41,7 @@ private fun AdminPanelScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {}) {
+            FloatingActionButton(onClick = { navigateToManageProduct(null) }) {
                 Icon(
                     imageVector = Icons.Plus,
                     contentDescription = "Add"
@@ -59,6 +61,9 @@ private fun AdminPanelScreen(
 @Composable
 private fun AdminPanelScreenPreview() {
     NutriSportTheme {
-        AdminPanelScreen {}
+        AdminPanelScreen(
+            navigateBack = {},
+            navigateToManageProduct = {}
+        )
     }
 }

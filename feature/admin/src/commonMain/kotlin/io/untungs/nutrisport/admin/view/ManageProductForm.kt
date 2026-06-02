@@ -1,0 +1,191 @@
+package io.untungs.nutrisport.admin.view
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import io.untungs.nutrisport.core.ui.component.CustomTextField
+import io.untungs.nutrisport.core.ui.icons.Icons
+import io.untungs.nutrisport.core.ui.icons.Plus
+
+data class ManageProductFormState(
+    val title: String = "",
+    val description: String = "",
+    val thumbnail: String = "",
+    val category: String = "",
+    val flavors: String? = null,
+    val weight: Int? = null,
+    val price: Double = 0.0,
+    val isNew: Boolean = false,
+    val isPopular: Boolean = false,
+    val isDiscounted: Boolean = false
+) {
+    val isTitleValid: Boolean get() = title.length in 3..100
+    val isDescriptionValid: Boolean get() = description.length in 10..1000
+    val isPriceValid: Boolean get() = price > 0.0
+
+    val isFormValid: Boolean
+        get() = isTitleValid &&
+                isDescriptionValid &&
+                isPriceValid
+}
+
+interface ManageProductFormAction {
+    fun onTitleChange(value: String)
+    fun onDescriptionChange(value: String)
+    fun onThumbnailChange(value: String)
+    fun onCategoryChange(value: String)
+    fun onFlavorsChange(value: String)
+    fun onWeightChange(value: Int?)
+    fun onPriceChange(value: Double)
+    fun onIsNewChange(value: Boolean)
+    fun onIsPopularChange(value: Boolean)
+    fun onIsDiscountedChange(value: Boolean)
+}
+
+@Composable
+fun ManageProductForm(
+    state: ManageProductFormState,
+    action: ManageProductFormAction,
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        MainFields(state, action)
+        CategoryFields(state, action)
+        CustomTextField(
+            value = if (state.price == 0.0) "" else state.price.toString(),
+            onValueChange = { action.onPriceChange(it.toDoubleOrNull() ?: 0.0) },
+            placeholder = "Price",
+            isError = !state.isPriceValid,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal,
+                imeAction = ImeAction.Done
+            )
+        )
+        SwitchRow("New", state.isNew, action::onIsNewChange)
+        SwitchRow("Popular", state.isPopular, action::onIsPopularChange)
+        SwitchRow("Discounted", state.isDiscounted, action::onIsDiscountedChange)
+    }
+}
+
+@Composable
+private fun MainFields(state: ManageProductFormState, action: ManageProductFormAction) {
+    Box(
+        modifier = Modifier.fillMaxWidth()
+            .height(300.dp)
+            .clip(RoundedCornerShape(6.dp))
+            .background(MaterialTheme.colorScheme.surfaceBright)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline,
+                shape = RoundedCornerShape(6.dp)
+            )
+            .clickable {
+
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = Icons.Plus,
+            contentDescription = "Add product image"
+        )
+    }
+    CustomTextField(
+        value = state.title,
+        onValueChange = action::onTitleChange,
+        placeholder = "Title",
+        isError = !state.isTitleValid,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+    )
+    CustomTextField(
+        modifier = Modifier.height(120.dp),
+        value = state.description,
+        onValueChange = action::onDescriptionChange,
+        placeholder = "Description",
+        isError = !state.isDescriptionValid,
+        singleLine = false,
+    )
+}
+
+@Composable
+private fun CategoryFields(state: ManageProductFormState, action: ManageProductFormAction) {
+    CustomTextField(
+        value = state.category,
+        onValueChange = {},
+        placeholder = "Category",
+        onClick = {
+
+        }
+    )
+    CustomTextField(
+        value = state.weight?.toString().orEmpty(),
+        onValueChange = { action.onWeightChange(it.toIntOrNull()) },
+        placeholder = "Weight",
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Next
+        )
+    )
+    CustomTextField(
+        value = state.flavors ?: "",
+        onValueChange = action::onFlavorsChange,
+        placeholder = "Flavors",
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+    )
+}
+
+@Composable
+private fun SwitchRow(title: String, isChecked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .toggleable(
+                value = isChecked,
+                onValueChange = onCheckedChange,
+                role = Role.Switch,
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = title)
+        Switch(
+            checked = isChecked,
+            onCheckedChange = null,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.colorScheme.surfaceBright,
+                checkedTrackColor = MaterialTheme.colorScheme.secondary,
+                uncheckedThumbColor = MaterialTheme.colorScheme.surface,
+                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                checkedBorderColor = Color.Transparent,
+                uncheckedBorderColor = Color.Transparent,
+            )
+        )
+    }
+}

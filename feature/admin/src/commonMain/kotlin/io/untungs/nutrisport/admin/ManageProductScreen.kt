@@ -1,0 +1,126 @@
+package io.untungs.nutrisport.admin
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.untungs.nutrisport.admin.view.ManageProductForm
+import io.untungs.nutrisport.admin.view.ManageProductFormAction
+import io.untungs.nutrisport.core.ui.component.CustomProgressIndicator
+import io.untungs.nutrisport.core.ui.component.InfoCard
+import io.untungs.nutrisport.core.ui.component.PrimaryButton
+import io.untungs.nutrisport.core.ui.component.PrimaryTopAppBar
+import io.untungs.nutrisport.core.ui.icons.Check
+import io.untungs.nutrisport.core.ui.icons.Icons
+import io.untungs.nutrisport.core.ui.icons.Plus
+import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun ManageProductRoute(
+    productId: String?,
+    viewModel: ManageProductViewModel = koinViewModel(),
+    navigateBack: () -> Unit,
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    ManageProductScreen(state, viewModel, productId.isNullOrBlank(), navigateBack)
+}
+
+@Composable
+private fun ManageProductScreen(
+    state: ManageProductUiState,
+    action: ManageProductFormAction,
+    isNewProduct: Boolean,
+    navigateBack: () -> Unit,
+) {
+    Scaffold(
+        topBar = {
+            PrimaryTopAppBar(
+                title = if (isNewProduct) "New Product" else "Edit Product",
+                onBackClick = navigateBack
+            )
+        },
+        contentWindowInsets = WindowInsets.safeDrawing
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            contentAlignment = Alignment.Center
+        ) {
+            when {
+                state.isLoading -> {
+                    CustomProgressIndicator()
+                }
+
+                state.errorMessage.isNotBlank() -> {
+                    InfoCard(
+                        modifier = Modifier.padding(24.dp),
+                        title = "Oops!",
+                        subtitle = state.errorMessage
+                    )
+                }
+
+                else -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 24.dp, vertical = 12.dp)
+                    ) {
+                        ManageProductForm(
+                            state = state.formState,
+                            action = action
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        PrimaryButton(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(top = 24.dp),
+                            text = if (isNewProduct) "Add New Product" else "Update",
+                            icon = if (isNewProduct) Icons.Plus else Icons.Check
+                        ) {
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ManageProductScreenPreview() {
+    val action = object : ManageProductFormAction {
+        override fun onTitleChange(value: String) {}
+        override fun onDescriptionChange(value: String) {}
+        override fun onThumbnailChange(value: String) {}
+        override fun onCategoryChange(value: String) {}
+        override fun onFlavorsChange(value: String) {}
+        override fun onWeightChange(value: Int?) {}
+        override fun onPriceChange(value: Double) {}
+        override fun onIsPopularChange(value: Boolean) {}
+        override fun onIsDiscountedChange(value: Boolean) {}
+        override fun onIsNewChange(value: Boolean) {}
+    }
+
+    NutriSportTheme {
+        ManageProductScreen(ManageProductUiState(), action, true) {}
+    }
+}
