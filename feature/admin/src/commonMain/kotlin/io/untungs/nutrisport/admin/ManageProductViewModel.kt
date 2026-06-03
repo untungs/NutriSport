@@ -90,11 +90,15 @@ class ManageProductViewModel(
     }
 
     override fun onTitleChange(value: String) {
-        _state.update { it.copy(formState = it.formState.copy(title = value)) }
+        _state.update {
+            it.copy(formState = it.formState.copy(title = value, isTitleTouched = true))
+        }
     }
 
     override fun onDescriptionChange(value: String) {
-        _state.update { it.copy(formState = it.formState.copy(description = value)) }
+        _state.update {
+            it.copy(formState = it.formState.copy(description = value, isDescriptionTouched = true))
+        }
     }
 
     override fun onThumbnailChange(value: String) {
@@ -114,7 +118,9 @@ class ManageProductViewModel(
     }
 
     override fun onPriceChange(value: Double) {
-        _state.update { it.copy(formState = it.formState.copy(price = value)) }
+        _state.update {
+            it.copy(formState = it.formState.copy(price = value, isPriceTouched = true))
+        }
     }
 
     override fun onIsNewChange(value: Boolean) {

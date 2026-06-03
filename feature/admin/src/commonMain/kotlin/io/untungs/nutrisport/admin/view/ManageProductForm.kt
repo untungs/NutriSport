@@ -53,7 +53,10 @@ data class ManageProductFormState(
     val price: Double = 0.0,
     val isNew: Boolean = false,
     val isPopular: Boolean = false,
-    val isDiscounted: Boolean = false
+    val isDiscounted: Boolean = false,
+    val isTitleTouched: Boolean = false,
+    val isDescriptionTouched: Boolean = false,
+    val isPriceTouched: Boolean = false
 ) {
     fun toProduct(updatedAt: Long) = Product(
         id = id,
@@ -93,7 +96,10 @@ data class ManageProductFormState(
             price = product.price,
             isNew = product.isNew,
             isPopular = product.isPopular,
-            isDiscounted = product.isDiscounted
+            isDiscounted = product.isDiscounted,
+            isTitleTouched = true,
+            isDescriptionTouched = true,
+            isPriceTouched = true
         )
     }
 }
@@ -142,7 +148,7 @@ fun ManageProductForm(
             value = if (state.price == 0.0) "" else state.price.toString(),
             onValueChange = { action.onPriceChange(it.toDoubleOrNull() ?: 0.0) },
             placeholder = "Price",
-            isError = !state.isPriceValid,
+            isError = !state.isPriceValid && state.isPriceTouched,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
                 imeAction = ImeAction.Done
@@ -180,7 +186,7 @@ private fun MainFields(state: ManageProductFormState, action: ManageProductFormA
         value = state.title,
         onValueChange = action::onTitleChange,
         placeholder = "Title",
-        isError = !state.isTitleValid,
+        isError = !state.isTitleValid && state.isTitleTouched,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
     )
     CustomTextField(
@@ -188,7 +194,7 @@ private fun MainFields(state: ManageProductFormState, action: ManageProductFormA
         value = state.description,
         onValueChange = action::onDescriptionChange,
         placeholder = "Description",
-        isError = !state.isDescriptionValid,
+        isError = !state.isDescriptionValid && state.isDescriptionTouched,
         singleLine = false,
     )
 }
