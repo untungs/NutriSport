@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,16 +38,32 @@ fun ManageProductRoute(
     viewModel: ManageProductViewModel = koinViewModel(),
     navigateBack: () -> Unit,
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-    ManageProductScreen(state, viewModel, productId.isNullOrBlank(), navigateBack)
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                ManageProductEvent.Success -> navigateBack()
+            }
+        }
+    }
+
+    ManageProductScreen(
+        state = state,
+        action = viewModel,
+        isNewProduct = productId.isNullOrBlank(),
+        navigateBack = navigateBack,
+        onSubmitClick = { viewModel.submitProduct() }
+    )
 }
 
 @Composable
 private fun ManageProductScreen(
-    state: ManageProductUiState,
+    state: ManageProductState,
     action: ManageProductFormAction,
     isNewProduct: Boolean,
     navigateBack: () -> Unit,
+    onSubmitClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -94,10 +111,11 @@ private fun ManageProductScreen(
                             modifier = Modifier.fillMaxWidth()
                                 .padding(top = 24.dp),
                             text = if (isNewProduct) "Add New Product" else "Update",
-                            icon = if (isNewProduct) Icons.Plus else Icons.Check
-                        ) {
-
-                        }
+                            icon = if (isNewProduct) Icons.Plus else Icons.Check,
+                            isLoading = state.isSubmitting,
+                            enabled = state.formState.isFormValid,
+                            onClick = onSubmitClick
+                        )
                     }
                 }
             }
@@ -122,6 +140,11 @@ private fun ManageProductScreenPreview() {
     }
 
     NutriSportTheme {
-        ManageProductScreen(ManageProductUiState(), action, true) {}
+        ManageProductScreen(
+            state = ManageProductState(),
+            action = action,
+            isNewProduct = true,
+            navigateBack = {}
+        ) {}
     }
 }

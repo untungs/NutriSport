@@ -31,12 +31,19 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import io.untungs.nutrisport.core.domain.model.Product
 import io.untungs.nutrisport.core.domain.model.ProductCategory
 import io.untungs.nutrisport.core.ui.component.CustomTextField
 import io.untungs.nutrisport.core.ui.icons.Icons
 import io.untungs.nutrisport.core.ui.icons.Plus
+import kotlin.time.Clock
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalUuidApi::class)
 data class ManageProductFormState(
+    val id: String = Uuid.random().toHexString(),
+    val createdAt: Long = Clock.System.now().toEpochMilliseconds(),
     val title: String = "",
     val description: String = "",
     val thumbnail: String = "",
@@ -48,6 +55,22 @@ data class ManageProductFormState(
     val isPopular: Boolean = false,
     val isDiscounted: Boolean = false
 ) {
+    fun toProduct(updatedAt: Long) = Product(
+        id = id,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        title = title,
+        description = description,
+        thumbnail = thumbnail,
+        category = category.title,
+        flavors = flavors?.split(",")?.map { it.trim() },
+        weight = weight,
+        price = price,
+        isNew = isNew,
+        isPopular = isPopular,
+        isDiscounted = isDiscounted,
+    )
+
     val isTitleValid: Boolean get() = title.length in 3..100
     val isDescriptionValid: Boolean get() = description.length in 10..1000
     val isPriceValid: Boolean get() = price > 0.0
