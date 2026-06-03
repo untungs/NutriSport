@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.untungs.nutrisport.admin.view.ManageProductForm
 import io.untungs.nutrisport.admin.view.ManageProductFormAction
+import io.untungs.nutrisport.core.domain.model.ProductCategory
 import io.untungs.nutrisport.core.ui.component.CustomProgressIndicator
 import io.untungs.nutrisport.core.ui.component.InfoCard
 import io.untungs.nutrisport.core.ui.component.PrimaryButton
@@ -111,7 +112,7 @@ private fun ManageProductScreenPreview() {
         override fun onTitleChange(value: String) {}
         override fun onDescriptionChange(value: String) {}
         override fun onThumbnailChange(value: String) {}
-        override fun onCategoryChange(value: String) {}
+        override fun onCategoryChange(value: ProductCategory) {}
         override fun onFlavorsChange(value: String) {}
         override fun onWeightChange(value: Int?) {}
         override fun onPriceChange(value: Double) {}

@@ -19,7 +19,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +31,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import io.untungs.nutrisport.core.domain.model.ProductCategory
 import io.untungs.nutrisport.core.ui.component.CustomTextField
 import io.untungs.nutrisport.core.ui.icons.Icons
 import io.untungs.nutrisport.core.ui.icons.Plus
@@ -36,7 +40,7 @@ data class ManageProductFormState(
     val title: String = "",
     val description: String = "",
     val thumbnail: String = "",
-    val category: String = "",
+    val category: ProductCategory = ProductCategory.Protein,
     val flavors: String? = null,
     val weight: Int? = null,
     val price: Double = 0.0,
@@ -58,7 +62,7 @@ interface ManageProductFormAction {
     fun onTitleChange(value: String)
     fun onDescriptionChange(value: String)
     fun onThumbnailChange(value: String)
-    fun onCategoryChange(value: String)
+    fun onCategoryChange(value: ProductCategory)
     fun onFlavorsChange(value: String)
     fun onWeightChange(value: Int?)
     fun onPriceChange(value: Double)
@@ -72,11 +76,28 @@ fun ManageProductForm(
     state: ManageProductFormState,
     action: ManageProductFormAction,
 ) {
+    var showCategoryPicker by remember { mutableStateOf(false) }
+
+    if (showCategoryPicker) {
+        CategoryPickerDialog(
+            category = state.category,
+            onConfirmClick = {
+                action.onCategoryChange(it)
+                showCategoryPicker = false
+            },
+            onDismiss = { showCategoryPicker = false }
+        )
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         MainFields(state, action)
-        CategoryFields(state, action)
+        CategoryFields(
+            state = state,
+            onCategoryClick = { showCategoryPicker = true },
+            action = action
+        )
         CustomTextField(
             value = if (state.price == 0.0) "" else state.price.toString(),
             onValueChange = { action.onPriceChange(it.toDoubleOrNull() ?: 0.0) },
@@ -133,30 +154,35 @@ private fun MainFields(state: ManageProductFormState, action: ManageProductFormA
 }
 
 @Composable
-private fun CategoryFields(state: ManageProductFormState, action: ManageProductFormAction) {
+private fun CategoryFields(
+    state: ManageProductFormState,
+    onCategoryClick: () -> Unit,
+    action: ManageProductFormAction
+) {
     CustomTextField(
-        value = state.category,
+        value = state.category.title,
         onValueChange = {},
         placeholder = "Category",
-        onClick = {
+        onClick = onCategoryClick,
+    )
 
-        }
-    )
-    CustomTextField(
-        value = state.weight?.toString().orEmpty(),
-        onValueChange = { action.onWeightChange(it.toIntOrNull()) },
-        placeholder = "Weight",
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Next
+    if (state.category.isConsumable) {
+        CustomTextField(
+            value = state.weight?.toString().orEmpty(),
+            onValueChange = { action.onWeightChange(it.toIntOrNull()) },
+            placeholder = "Weight",
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            )
         )
-    )
-    CustomTextField(
-        value = state.flavors ?: "",
-        onValueChange = action::onFlavorsChange,
-        placeholder = "Flavors",
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
-    )
+        CustomTextField(
+            value = state.flavors ?: "",
+            onValueChange = action::onFlavorsChange,
+            placeholder = "Flavors",
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+        )
+    }
 }
 
 @Composable

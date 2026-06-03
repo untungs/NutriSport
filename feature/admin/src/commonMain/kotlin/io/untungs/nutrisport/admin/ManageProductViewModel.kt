@@ -3,6 +3,7 @@ package io.untungs.nutrisport.admin
 import androidx.lifecycle.ViewModel
 import io.untungs.nutrisport.admin.view.ManageProductFormAction
 import io.untungs.nutrisport.admin.view.ManageProductFormState
+import io.untungs.nutrisport.core.domain.model.ProductCategory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,7 +33,7 @@ class ManageProductViewModel : ViewModel(), ManageProductFormAction {
         _uiState.update { it.copy(formState = it.formState.copy(thumbnail = value)) }
     }
 
-    override fun onCategoryChange(value: String) {
+    override fun onCategoryChange(value: ProductCategory) {
         _uiState.update { it.copy(formState = it.formState.copy(category = value)) }
     }
 
