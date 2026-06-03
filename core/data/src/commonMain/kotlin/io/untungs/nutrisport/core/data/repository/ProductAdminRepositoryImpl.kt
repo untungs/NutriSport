@@ -4,6 +4,8 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
 import io.untungs.nutrisport.core.domain.model.Product
 import io.untungs.nutrisport.core.domain.repository.ProductAdminRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class ProductAdminRepositoryImpl : ProductAdminRepository {
 
@@ -11,6 +13,12 @@ class ProductAdminRepositoryImpl : ProductAdminRepository {
         Firebase.firestore.collection(PRODUCT_COLLECTION)
             .document(product.id)
             .set(product)
+    }
+
+    override fun getProducts(): Flow<List<Product>> {
+        return Firebase.firestore.collection(PRODUCT_COLLECTION)
+            .snapshots()
+            .map { it.documents.map { snapshot -> snapshot.data() } }
     }
 
     companion object {

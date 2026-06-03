@@ -4,16 +4,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Product(
-    val id: String,
-    val createdAt: Long,
-    val updatedAt: Long,
-    val title: String,
-    val description: String,
-    val thumbnail: String,
-    val category: String,
+    val id: String = "",
+    val createdAt: Long = 0L,
+    val updatedAt: Long = 0L,
+    val title: String = "",
+    val description: String = "",
+    val thumbnail: String = "",
+    val category: String = "",
     val flavors: List<String>? = null,
     val weight: Int? = null,
-    val price: Double,
+    val price: Double = 0.0,
     val isNew: Boolean = false,
     val isPopular: Boolean = false,
     val isDiscounted: Boolean = false
