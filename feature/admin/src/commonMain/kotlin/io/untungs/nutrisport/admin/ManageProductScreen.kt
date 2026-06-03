@@ -40,7 +40,11 @@ fun ManageProductRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(productId) {
+        if (!productId.isNullOrBlank()) {
+            viewModel.fetchProduct(productId)
+        }
+
         viewModel.event.collect { event ->
             when (event) {
                 ManageProductEvent.Success -> navigateBack()

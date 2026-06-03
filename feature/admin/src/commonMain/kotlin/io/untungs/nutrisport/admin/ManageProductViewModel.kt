@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import io.untungs.nutrisport.admin.view.ManageProductFormAction
 import io.untungs.nutrisport.admin.view.ManageProductFormState
 import io.untungs.nutrisport.core.domain.model.ProductCategory
+import io.untungs.nutrisport.core.domain.usecase.GetProductUseCase
 import io.untungs.nutrisport.core.domain.usecase.SubmitProductUseCase
 import io.untungs.nutrisport.core.ui.AppMessageManager
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -30,6 +31,7 @@ sealed interface ManageProductEvent {
 
 class ManageProductViewModel(
     val submitProductUseCase: SubmitProductUseCase,
+    val getProductUseCase: GetProductUseCase,
     val appMessageManager: AppMessageManager,
 ) : ViewModel(), ManageProductFormAction {
 
@@ -38,6 +40,30 @@ class ManageProductViewModel(
 
     private val _event = MutableSharedFlow<ManageProductEvent>()
     val event: SharedFlow<ManageProductEvent> = _event.asSharedFlow()
+
+    fun fetchProduct(productId: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+
+            getProductUseCase(productId).collect { product ->
+                if (product != null) {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            formState = ManageProductFormState.fromProduct(product)
+                        )
+                    }
+                } else {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = "Product not found"
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     fun submitProduct() {
         viewModelScope.launch {

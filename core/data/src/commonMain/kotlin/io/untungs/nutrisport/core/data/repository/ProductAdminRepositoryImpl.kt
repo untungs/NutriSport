@@ -21,6 +21,13 @@ class ProductAdminRepositoryImpl : ProductAdminRepository {
             .map { it.documents.map { snapshot -> snapshot.data() } }
     }
 
+    override fun getProduct(productId: String): Flow<Product?> {
+        return Firebase.firestore.collection(PRODUCT_COLLECTION)
+            .document(productId)
+            .snapshots()
+            .map { it.data() }
+    }
+
     companion object {
         private const val PRODUCT_COLLECTION = "product"
     }

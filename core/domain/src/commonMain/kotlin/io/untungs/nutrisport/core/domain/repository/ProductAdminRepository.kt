@@ -8,4 +8,6 @@ interface ProductAdminRepository {
     suspend fun saveProduct(product: Product)
 
     fun getProducts(): Flow<List<Product>>
+
+    fun getProduct(productId: String): Flow<Product?>
 }

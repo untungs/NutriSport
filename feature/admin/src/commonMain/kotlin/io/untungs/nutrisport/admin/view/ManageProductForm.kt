@@ -79,6 +79,23 @@ data class ManageProductFormState(
         get() = isTitleValid &&
                 isDescriptionValid &&
                 isPriceValid
+
+    companion object {
+        fun fromProduct(product: Product) = ManageProductFormState(
+            id = product.id,
+            createdAt = product.createdAt,
+            title = product.title,
+            description = product.description,
+            thumbnail = product.thumbnail,
+            category = ProductCategory.entries.find { it.title == product.category } ?: ProductCategory.Protein,
+            flavors = product.flavors?.joinToString(", "),
+            weight = product.weight,
+            price = product.price,
+            isNew = product.isNew,
+            isPopular = product.isPopular,
+            isDiscounted = product.isDiscounted
+        )
+    }
 }
 
 interface ManageProductFormAction {
