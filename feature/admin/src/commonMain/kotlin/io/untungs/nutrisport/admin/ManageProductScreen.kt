@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.untungs.nutrisport.admin.util.PhotoPicker
 import io.untungs.nutrisport.admin.view.ManageProductForm
 import io.untungs.nutrisport.admin.view.ManageProductFormAction
 import io.untungs.nutrisport.core.domain.model.ProductCategory
@@ -30,6 +31,7 @@ import io.untungs.nutrisport.core.ui.icons.Check
 import io.untungs.nutrisport.core.ui.icons.Icons
 import io.untungs.nutrisport.core.ui.icons.Plus
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -38,7 +40,14 @@ fun ManageProductRoute(
     viewModel: ManageProductViewModel = koinViewModel(),
     navigateBack: () -> Unit,
 ) {
+    val photoPicker = koinInject<PhotoPicker>()
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    photoPicker.InitializePhotoPicker { file ->
+        if (file != null) {
+            viewModel.onImageSelected(file)
+        }
+    }
 
     LaunchedEffect(productId) {
         if (!productId.isNullOrBlank()) {
@@ -57,6 +66,7 @@ fun ManageProductRoute(
         action = viewModel,
         isNewProduct = productId.isNullOrBlank(),
         navigateBack = navigateBack,
+        onImageClick = { photoPicker.open() },
         onSubmitClick = { viewModel.submitProduct() }
     )
 }
@@ -67,6 +77,7 @@ private fun ManageProductScreen(
     action: ManageProductFormAction,
     isNewProduct: Boolean,
     navigateBack: () -> Unit,
+    onImageClick: () -> Unit,
     onSubmitClick: () -> Unit,
 ) {
     Scaffold(
@@ -106,7 +117,8 @@ private fun ManageProductScreen(
                     ) {
                         ManageProductForm(
                             state = state.formState,
-                            action = action
+                            action = action,
+                            onImageClick = onImageClick
                         )
 
                         Spacer(modifier = Modifier.weight(1f))
@@ -134,6 +146,7 @@ private fun ManageProductScreenPreview() {
         override fun onTitleChange(value: String) {}
         override fun onDescriptionChange(value: String) {}
         override fun onThumbnailChange(value: String) {}
+        override fun onImageSelected(bytes: ByteArray) {}
         override fun onCategoryChange(value: ProductCategory) {}
         override fun onFlavorsChange(value: String) {}
         override fun onWeightChange(value: Int?) {}
@@ -148,6 +161,7 @@ private fun ManageProductScreenPreview() {
             state = ManageProductState(),
             action = action,
             isNewProduct = true,
+            onImageClick = {},
             navigateBack = {}
         ) {}
     }

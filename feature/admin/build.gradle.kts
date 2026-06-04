@@ -12,6 +12,8 @@ kotlin {
             implementation(projects.core.ui)
             implementation(projects.core.domain)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
         }
     }
 }

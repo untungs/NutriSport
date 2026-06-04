@@ -13,9 +13,11 @@ kotlin {
         }
 
         commonMain.dependencies {
+            implementation(project.dependencies.platform(libs.supabase.bom))
             implementation(projects.core.domain)
             implementation(libs.firebase.auth)
             implementation(libs.firebase.firestore)
+            implementation(libs.supabase.storage)
             implementation(libs.koin.core)
         }
     }

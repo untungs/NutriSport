@@ -7,6 +7,7 @@ import io.untungs.nutrisport.admin.view.ManageProductFormState
 import io.untungs.nutrisport.core.domain.model.ProductCategory
 import io.untungs.nutrisport.core.domain.usecase.GetProductUseCase
 import io.untungs.nutrisport.core.domain.usecase.SubmitProductUseCase
+import io.untungs.nutrisport.core.domain.usecase.UploadProductImageUseCase
 import io.untungs.nutrisport.core.ui.AppMessageManager
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +33,7 @@ sealed interface ManageProductEvent {
 class ManageProductViewModel(
     val submitProductUseCase: SubmitProductUseCase,
     val getProductUseCase: GetProductUseCase,
+    val uploadProductImageUseCase: UploadProductImageUseCase,
     val appMessageManager: AppMessageManager,
 ) : ViewModel(), ManageProductFormAction {
 
@@ -43,7 +45,7 @@ class ManageProductViewModel(
 
     fun fetchProduct(productId: String) {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            _state.update { it.copy(isLoading = true, errorMessage = "") }
 
             getProductUseCase(productId).collect { product ->
                 if (product != null) {
@@ -67,7 +69,7 @@ class ManageProductViewModel(
 
     fun submitProduct() {
         viewModelScope.launch {
-            _state.update { it.copy(isSubmitting = true) }
+            _state.update { it.copy(isSubmitting = true, errorMessage = "") }
 
             val product = state.value.formState.toProduct(
                 updatedAt = Clock.System.now().toEpochMilliseconds()
@@ -90,9 +92,7 @@ class ManageProductViewModel(
     }
 
     override fun onTitleChange(value: String) {
-        _state.update {
-            it.copy(formState = it.formState.copy(title = value, isTitleTouched = true))
-        }
+        updateFormState { it.copy(title = value, isTitleTouched = true) }
     }
 
     override fun onDescriptionChange(value: String) {
@@ -102,36 +102,53 @@ class ManageProductViewModel(
     }
 
     override fun onThumbnailChange(value: String) {
-        _state.update { it.copy(formState = it.formState.copy(thumbnail = value)) }
+        updateFormState { it.copy(thumbnail = value) }
     }
 
-    override fun onCategoryChange(value: ProductCategory) {
-        _state.update { it.copy(formState = it.formState.copy(category = value)) }
-    }
+    override fun onImageSelected(bytes: ByteArray) {
+        viewModelScope.launch {
+            updateFormState { it.copy(isImageUploading = true) }
 
-    override fun onFlavorsChange(value: String) {
-        _state.update { it.copy(formState = it.formState.copy(flavors = value)) }
-    }
+            val result = uploadProductImageUseCase(state.value.formState.id, bytes)
 
-    override fun onWeightChange(value: Int?) {
-        _state.update { it.copy(formState = it.formState.copy(weight = value)) }
-    }
-
-    override fun onPriceChange(value: Double) {
-        _state.update {
-            it.copy(formState = it.formState.copy(price = value, isPriceTouched = true))
+            result.onSuccess { url ->
+                updateFormState { it.copy(thumbnail = url, isImageUploading = false) }
+            }.onFailure { e ->
+                updateFormState { it.copy(isImageUploading = false) }
+                appMessageManager.showError(e.message ?: "Failed to upload image")
+            }
         }
     }
 
+    override fun onCategoryChange(value: ProductCategory) {
+        updateFormState { it.copy(category = value) }
+    }
+
+    override fun onFlavorsChange(value: String) {
+        updateFormState { it.copy(flavors = value) }
+    }
+
+    override fun onWeightChange(value: Int?) {
+        updateFormState { it.copy(weight = value) }
+    }
+
+    override fun onPriceChange(value: Double) {
+        updateFormState { it.copy(price = value, isPriceTouched = true) }
+    }
+
     override fun onIsNewChange(value: Boolean) {
-        _state.update { it.copy(formState = it.formState.copy(isNew = value)) }
+        updateFormState { it.copy(isNew = value) }
     }
 
     override fun onIsPopularChange(value: Boolean) {
-        _state.update { it.copy(formState = it.formState.copy(isPopular = value)) }
+        updateFormState { it.copy(isPopular = value) }
     }
 
     override fun onIsDiscountedChange(value: Boolean) {
-        _state.update { it.copy(formState = it.formState.copy(isDiscounted = value)) }
+        updateFormState { it.copy(isDiscounted = value) }
+    }
+
+    private fun updateFormState(update: (ManageProductFormState) -> ManageProductFormState) {
+        _state.update { it.copy(formState = update(it.formState)) }
     }
 }

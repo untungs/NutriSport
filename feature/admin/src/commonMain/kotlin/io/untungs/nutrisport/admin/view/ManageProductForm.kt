@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.selection.toggleable
@@ -27,12 +28,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import io.untungs.nutrisport.core.domain.model.Product
 import io.untungs.nutrisport.core.domain.model.ProductCategory
+import io.untungs.nutrisport.core.ui.component.CustomProgressIndicator
 import io.untungs.nutrisport.core.ui.component.CustomTextField
 import io.untungs.nutrisport.core.ui.icons.Icons
 import io.untungs.nutrisport.core.ui.icons.Plus
@@ -44,6 +48,7 @@ import kotlin.uuid.Uuid
 data class ManageProductFormState(
     val id: String = Uuid.random().toHexString(),
     val createdAt: Long = Clock.System.now().toEpochMilliseconds(),
+    // user inputs
     val title: String = "",
     val description: String = "",
     val thumbnail: String = "",
@@ -54,6 +59,8 @@ data class ManageProductFormState(
     val isNew: Boolean = false,
     val isPopular: Boolean = false,
     val isDiscounted: Boolean = false,
+    // helper states
+    val isImageUploading: Boolean = false,
     val isTitleTouched: Boolean = false,
     val isDescriptionTouched: Boolean = false,
     val isPriceTouched: Boolean = false
@@ -108,6 +115,7 @@ interface ManageProductFormAction {
     fun onTitleChange(value: String)
     fun onDescriptionChange(value: String)
     fun onThumbnailChange(value: String)
+    fun onImageSelected(bytes: ByteArray)
     fun onCategoryChange(value: ProductCategory)
     fun onFlavorsChange(value: String)
     fun onWeightChange(value: Int?)
@@ -121,6 +129,7 @@ interface ManageProductFormAction {
 fun ManageProductForm(
     state: ManageProductFormState,
     action: ManageProductFormAction,
+    onImageClick: () -> Unit,
 ) {
     var showCategoryPicker by remember { mutableStateOf(false) }
 
@@ -138,7 +147,11 @@ fun ManageProductForm(
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        MainFields(state, action)
+        MainFields(
+            state = state,
+            action = action,
+            onImageClick = onImageClick
+        )
         CategoryFields(
             state = state,
             onCategoryClick = { showCategoryPicker = true },
@@ -161,7 +174,11 @@ fun ManageProductForm(
 }
 
 @Composable
-private fun MainFields(state: ManageProductFormState, action: ManageProductFormAction) {
+private fun MainFields(
+    state: ManageProductFormState,
+    action: ManageProductFormAction,
+    onImageClick: () -> Unit,
+) {
     Box(
         modifier = Modifier.fillMaxWidth()
             .height(300.dp)
@@ -172,15 +189,24 @@ private fun MainFields(state: ManageProductFormState, action: ManageProductFormA
                 color = MaterialTheme.colorScheme.outline,
                 shape = RoundedCornerShape(6.dp)
             )
-            .clickable {
-
-            },
+            .clickable(enabled = !state.isImageUploading, onClick = onImageClick),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = Icons.Plus,
-            contentDescription = "Add product image"
-        )
+        if (state.isImageUploading) {
+            CustomProgressIndicator()
+        } else if (state.thumbnail.isNotEmpty()) {
+            AsyncImage(
+                model = state.thumbnail,
+                contentDescription = "Product image",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Plus,
+                contentDescription = "Add product image"
+            )
+        }
     }
     CustomTextField(
         value = state.title,
