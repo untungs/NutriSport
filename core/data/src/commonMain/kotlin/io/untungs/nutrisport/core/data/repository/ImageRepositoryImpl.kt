@@ -10,7 +10,7 @@ class ImageRepositoryImpl(
 ) : ImageRepository {
 
     override suspend fun uploadProductImage(productId: String, bytes: ByteArray): Result<String> {
-        return try {
+        return runCatching {
             val bucket = supabaseClient.storage.from(PRODUCT_BUCKET)
             val fileName = "${productId}_${Clock.System.now().toEpochMilliseconds()}.jpg"
 
@@ -18,14 +18,19 @@ class ImageRepositoryImpl(
                 upsert = true
             }
 
-            val url = bucket.publicUrl(fileName)
-            Result.success(url)
-        } catch (e: Exception) {
-            Result.failure(e)
+            bucket.publicUrl(fileName)
+        }
+    }
+
+    override suspend fun deleteProductImage(url: String): Result<Unit> {
+        return runCatching {
+            val bucket = supabaseClient.storage.from(PRODUCT_BUCKET)
+            val fileName = url.substringAfterLast("/")
+            bucket.delete(fileName)
         }
     }
 
     companion object {
-        private val PRODUCT_BUCKET = "products"
+        private const val PRODUCT_BUCKET = "products"
     }
 }

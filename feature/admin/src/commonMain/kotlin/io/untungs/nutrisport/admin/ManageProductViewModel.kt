@@ -8,6 +8,7 @@ import io.untungs.nutrisport.core.domain.model.ProductCategory
 import io.untungs.nutrisport.core.domain.usecase.GetProductUseCase
 import io.untungs.nutrisport.core.domain.usecase.SubmitProductUseCase
 import io.untungs.nutrisport.core.domain.usecase.UploadProductImageUseCase
+import io.untungs.nutrisport.core.domain.usecase.DeleteProductImageUseCase
 import io.untungs.nutrisport.core.ui.AppMessageManager
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,13 +28,14 @@ data class ManageProductState(
 )
 
 sealed interface ManageProductEvent {
-    data object Success : ManageProductEvent
+    data object NavigateBack : ManageProductEvent
 }
 
 class ManageProductViewModel(
     val submitProductUseCase: SubmitProductUseCase,
     val getProductUseCase: GetProductUseCase,
     val uploadProductImageUseCase: UploadProductImageUseCase,
+    val deleteProductImageUseCase: DeleteProductImageUseCase,
     val appMessageManager: AppMessageManager,
 ) : ViewModel(), ManageProductFormAction {
 
@@ -69,25 +71,55 @@ class ManageProductViewModel(
 
     fun submitProduct() {
         viewModelScope.launch {
-            _state.update { it.copy(isSubmitting = true, errorMessage = "") }
+            _state.update { it.copy(isSubmitting = true) }
 
-            val product = state.value.formState.toProduct(
+            val formState = state.value.formState
+            val product = formState.toProduct(
                 updatedAt = Clock.System.now().toEpochMilliseconds()
             )
             val result = submitProductUseCase(product)
 
             result.onSuccess {
                 _state.update { it.copy(isSubmitting = false) }
-                appMessageManager.showSuccess("Product successfully saved!")
-                _event.emit(ManageProductEvent.Success)
-            }.onFailure { e ->
-                _state.update {
-                    it.copy(
-                        isSubmitting = false,
-                        errorMessage = e.message ?: "Unknown error occurred"
-                    )
+
+                // Cleanup unused images
+                if (product.thumbnail != formState.oldThumbnail) {
+                    deleteProductImageUseCase(formState.oldThumbnail)
                 }
+
+                appMessageManager.showSuccess("Product successfully saved!")
+                _event.emit(ManageProductEvent.NavigateBack)
+            }.onFailure { e ->
+                _state.update { it.copy(isSubmitting = false) }
+                appMessageManager.showError(e.message ?: "Unknown error occurred")
             }
+        }
+    }
+
+    fun uploadImage(bytes: ByteArray) {
+        viewModelScope.launch {
+            updateFormState { it.copy(isImageUploading = true) }
+
+            val stateBeforeUpload = state.value.formState
+            val result = uploadProductImageUseCase(stateBeforeUpload.id, bytes)
+
+            result.onSuccess { url ->
+                updateFormState {
+                    it.copy(thumbnail = url, newThumbnail = url, isImageUploading = false)
+                }
+                // Delete previous newThumbnail
+                deleteProductImageUseCase(stateBeforeUpload.newThumbnail)
+            }.onFailure { e ->
+                updateFormState { it.copy(isImageUploading = false) }
+                appMessageManager.showError(e.message ?: "Failed to upload image")
+            }
+        }
+    }
+
+    fun cancelEdit() {
+        viewModelScope.launch {
+            deleteProductImageUseCase(state.value.formState.newThumbnail)
+            _event.emit(ManageProductEvent.NavigateBack)
         }
     }
 
@@ -96,27 +128,14 @@ class ManageProductViewModel(
     }
 
     override fun onDescriptionChange(value: String) {
-        _state.update {
-            it.copy(formState = it.formState.copy(description = value, isDescriptionTouched = true))
-        }
+        updateFormState { it.copy(description = value, isDescriptionTouched = true) }
     }
 
-    override fun onThumbnailChange(value: String) {
-        updateFormState { it.copy(thumbnail = value) }
-    }
-
-    override fun onImageSelected(bytes: ByteArray) {
+    override fun onDeleteImageClick() {
         viewModelScope.launch {
-            updateFormState { it.copy(isImageUploading = true) }
-
-            val result = uploadProductImageUseCase(state.value.formState.id, bytes)
-
-            result.onSuccess { url ->
-                updateFormState { it.copy(thumbnail = url, isImageUploading = false) }
-            }.onFailure { e ->
-                updateFormState { it.copy(isImageUploading = false) }
-                appMessageManager.showError(e.message ?: "Failed to upload image")
-            }
+            val currentNewThumbnail = state.value.formState.newThumbnail
+            updateFormState { it.copy(thumbnail = "", newThumbnail = "") }
+            deleteProductImageUseCase(currentNewThumbnail)
         }
     }
 

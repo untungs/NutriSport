@@ -45,7 +45,7 @@ fun ManageProductRoute(
 
     photoPicker.InitializePhotoPicker { file ->
         if (file != null) {
-            viewModel.onImageSelected(file)
+            viewModel.uploadImage(file)
         }
     }
 
@@ -56,7 +56,7 @@ fun ManageProductRoute(
 
         viewModel.event.collect { event ->
             when (event) {
-                ManageProductEvent.Success -> navigateBack()
+                ManageProductEvent.NavigateBack -> navigateBack()
             }
         }
     }
@@ -65,7 +65,7 @@ fun ManageProductRoute(
         state = state,
         action = viewModel,
         isNewProduct = productId.isNullOrBlank(),
-        navigateBack = navigateBack,
+        onBackClick = { viewModel.cancelEdit() },
         onImageClick = { photoPicker.open() },
         onSubmitClick = { viewModel.submitProduct() }
     )
@@ -76,7 +76,7 @@ private fun ManageProductScreen(
     state: ManageProductState,
     action: ManageProductFormAction,
     isNewProduct: Boolean,
-    navigateBack: () -> Unit,
+    onBackClick: () -> Unit,
     onImageClick: () -> Unit,
     onSubmitClick: () -> Unit,
 ) {
@@ -84,7 +84,7 @@ private fun ManageProductScreen(
         topBar = {
             PrimaryTopAppBar(
                 title = if (isNewProduct) "New Product" else "Edit Product",
-                onBackClick = navigateBack
+                onBackClick = onBackClick
             )
         },
         contentWindowInsets = WindowInsets.safeDrawing
@@ -145,8 +145,7 @@ private fun ManageProductScreenPreview() {
     val action = object : ManageProductFormAction {
         override fun onTitleChange(value: String) {}
         override fun onDescriptionChange(value: String) {}
-        override fun onThumbnailChange(value: String) {}
-        override fun onImageSelected(bytes: ByteArray) {}
+        override fun onDeleteImageClick() {}
         override fun onCategoryChange(value: ProductCategory) {}
         override fun onFlavorsChange(value: String) {}
         override fun onWeightChange(value: Int?) {}
@@ -161,8 +160,9 @@ private fun ManageProductScreenPreview() {
             state = ManageProductState(),
             action = action,
             isNewProduct = true,
+            onBackClick = {},
             onImageClick = {},
-            navigateBack = {}
-        ) {}
+            onSubmitClick = {}
+        )
     }
 }

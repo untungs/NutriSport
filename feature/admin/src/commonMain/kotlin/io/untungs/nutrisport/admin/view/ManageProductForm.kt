@@ -11,10 +11,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -38,6 +41,7 @@ import io.untungs.nutrisport.core.domain.model.Product
 import io.untungs.nutrisport.core.domain.model.ProductCategory
 import io.untungs.nutrisport.core.ui.component.CustomProgressIndicator
 import io.untungs.nutrisport.core.ui.component.CustomTextField
+import io.untungs.nutrisport.core.ui.icons.Delete
 import io.untungs.nutrisport.core.ui.icons.Icons
 import io.untungs.nutrisport.core.ui.icons.Plus
 import kotlin.time.Clock
@@ -60,6 +64,8 @@ data class ManageProductFormState(
     val isPopular: Boolean = false,
     val isDiscounted: Boolean = false,
     // helper states
+    val oldThumbnail: String = thumbnail,
+    val newThumbnail: String = "",
     val isImageUploading: Boolean = false,
     val isTitleTouched: Boolean = false,
     val isDescriptionTouched: Boolean = false,
@@ -97,7 +103,9 @@ data class ManageProductFormState(
             title = product.title,
             description = product.description,
             thumbnail = product.thumbnail,
-            category = ProductCategory.entries.find { it.title == product.category } ?: ProductCategory.Protein,
+            oldThumbnail = product.thumbnail,
+            category = ProductCategory.entries.find { it.title == product.category }
+                ?: ProductCategory.Protein,
             flavors = product.flavors?.joinToString(", "),
             weight = product.weight,
             price = product.price,
@@ -114,8 +122,7 @@ data class ManageProductFormState(
 interface ManageProductFormAction {
     fun onTitleChange(value: String)
     fun onDescriptionChange(value: String)
-    fun onThumbnailChange(value: String)
-    fun onImageSelected(bytes: ByteArray)
+    fun onDeleteImageClick()
     fun onCategoryChange(value: ProductCategory)
     fun onFlavorsChange(value: String)
     fun onWeightChange(value: Int?)
@@ -131,30 +138,31 @@ fun ManageProductForm(
     action: ManageProductFormAction,
     onImageClick: () -> Unit,
 ) {
-    var showCategoryPicker by remember { mutableStateOf(false) }
-
-    if (showCategoryPicker) {
-        CategoryPickerDialog(
-            category = state.category,
-            onConfirmClick = {
-                action.onCategoryChange(it)
-                showCategoryPicker = false
-            },
-            onDismiss = { showCategoryPicker = false }
-        )
-    }
-
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        MainFields(
+        ProductImage(
             state = state,
             action = action,
             onImageClick = onImageClick
         )
+        CustomTextField(
+            value = state.title,
+            onValueChange = action::onTitleChange,
+            placeholder = "Title",
+            isError = !state.isTitleValid && state.isTitleTouched,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+        )
+        CustomTextField(
+            modifier = Modifier.height(120.dp),
+            value = state.description,
+            onValueChange = action::onDescriptionChange,
+            placeholder = "Description",
+            isError = !state.isDescriptionValid && state.isDescriptionTouched,
+            singleLine = false,
+        )
         CategoryFields(
             state = state,
-            onCategoryClick = { showCategoryPicker = true },
             action = action
         )
         CustomTextField(
@@ -174,7 +182,7 @@ fun ManageProductForm(
 }
 
 @Composable
-private fun MainFields(
+private fun ProductImage(
     state: ManageProductFormState,
     action: ManageProductFormAction,
     onImageClick: () -> Unit,
@@ -190,52 +198,68 @@ private fun MainFields(
                 shape = RoundedCornerShape(6.dp)
             )
             .clickable(enabled = !state.isImageUploading, onClick = onImageClick),
-        contentAlignment = Alignment.Center
     ) {
-        if (state.isImageUploading) {
-            CustomProgressIndicator()
-        } else if (state.thumbnail.isNotEmpty()) {
+        if (state.thumbnail.isNotEmpty()) {
             AsyncImage(
                 model = state.thumbnail,
                 contentDescription = "Product image",
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
-        } else {
+            IconButton(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(6.dp))
+                    .size(38.dp)
+                    .align(Alignment.TopEnd),
+                onClick = action::onDeleteImageClick
+            ) {
+                Icon(
+                    imageVector = Icons.Delete,
+                    contentDescription = "Delete image",
+                    modifier = Modifier.size(14.dp),
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        } else if (!state.isImageUploading) {
             Icon(
                 imageVector = Icons.Plus,
-                contentDescription = "Add product image"
+                contentDescription = "Add product image",
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+
+        if (state.isImageUploading) {
+            CustomProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
             )
         }
     }
-    CustomTextField(
-        value = state.title,
-        onValueChange = action::onTitleChange,
-        placeholder = "Title",
-        isError = !state.isTitleValid && state.isTitleTouched,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
-    )
-    CustomTextField(
-        modifier = Modifier.height(120.dp),
-        value = state.description,
-        onValueChange = action::onDescriptionChange,
-        placeholder = "Description",
-        isError = !state.isDescriptionValid && state.isDescriptionTouched,
-        singleLine = false,
-    )
 }
 
 @Composable
 private fun CategoryFields(
     state: ManageProductFormState,
-    onCategoryClick: () -> Unit,
     action: ManageProductFormAction
 ) {
+    var showCategoryPicker by remember { mutableStateOf(false) }
+
+    if (showCategoryPicker) {
+        CategoryPickerDialog(
+            category = state.category,
+            onConfirmClick = {
+                action.onCategoryChange(it)
+                showCategoryPicker = false
+            },
+            onDismiss = { showCategoryPicker = false }
+        )
+    }
+
     CustomTextField(
         value = state.category.title,
         onValueChange = {},
         placeholder = "Category",
-        onClick = onCategoryClick,
+        onClick = { showCategoryPicker = true },
     )
 
     if (state.category.isConsumable) {
