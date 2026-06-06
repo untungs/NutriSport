@@ -20,6 +20,7 @@ val lightScheme = lightColorScheme(
     outline = GrayDarker,
     surfaceBright = GrayLighter,
     surfaceDim = Gray,
+    surfaceVariant = Gray,
 )
 
 val darkScheme = darkColorScheme(
@@ -36,6 +37,7 @@ val darkScheme = darkColorScheme(
     outline = DarkDarker,
     surfaceBright = DarkLighter,
     surfaceDim = DarkBlack,
+    surfaceVariant = DarkLighter,
 )
 
 @Composable

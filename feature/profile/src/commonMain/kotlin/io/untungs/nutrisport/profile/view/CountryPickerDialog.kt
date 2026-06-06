@@ -16,13 +16,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -39,6 +36,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.untungs.nutrisport.core.domain.model.Country
+import io.untungs.nutrisport.core.ui.component.CustomAlertDialog
 import io.untungs.nutrisport.core.ui.component.CustomTextField
 import io.untungs.nutrisport.core.ui.component.InfoCard
 import io.untungs.nutrisport.core.ui.icons.Check
@@ -53,47 +51,16 @@ fun CountryPickerDialog(
 ) {
     var selectedCountry by remember { mutableStateOf(country) }
 
-    AlertDialog(
-        containerColor = MaterialTheme.colorScheme.surface,
+    CustomAlertDialog(
         onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(
-                onClick = { onConfirmClick(selectedCountry) },
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = MaterialTheme.colorScheme.secondary
-                )
-            ) {
-                Text(
-                    text = "Confirm",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = onDismiss,
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onSurface
-                )
-            ) {
-                Text(
-                    text = "Cancel",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        },
-        title = {
-            Text(
-                text = "Select A Country",
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
+        onConfirmClick = { onConfirmClick(selectedCountry) },
+        title = "Select A Country",
         text = {
             CountryPickerDialogContent(
                 selectedCountry = selectedCountry,
                 onSelect = { selectedCountry = it }
             )
-        },
+        }
     )
 }
 
