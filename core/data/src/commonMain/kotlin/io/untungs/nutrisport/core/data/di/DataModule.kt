@@ -5,6 +5,7 @@ import io.github.jan.supabase.annotations.SupabaseInternal
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.storage.Storage
 import io.ktor.client.plugins.HttpTimeout
+import io.untungs.nutrisport.core.data.DataBuildKonfig
 import io.untungs.nutrisport.core.data.repository.CustomerRepositoryImpl
 import io.untungs.nutrisport.core.data.repository.ImageRepositoryImpl
 import io.untungs.nutrisport.core.data.repository.ProductAdminRepositoryImpl
@@ -27,8 +28,8 @@ val dataModule = module {
 
     single<SupabaseClient> {
         createSupabaseClient(
-            supabaseUrl = "",
-            supabaseKey = ""
+            supabaseUrl = DataBuildKonfig.SUPABASE_URL,
+            supabaseKey = DataBuildKonfig.SUPABASE_KEY,
         ) {
             install(Storage)
             requestTimeout = 60.seconds
