@@ -12,6 +12,7 @@ class CreateCustomerUseCase(
             if (!isCustomerExist) {
                 val customer = Customer(id, displayName, email)
                 customerRepository.saveCustomer(customer)
+                customerRepository.saveRole(id, false)
             }
         }
     }

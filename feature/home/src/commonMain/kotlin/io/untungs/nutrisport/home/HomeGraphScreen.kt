@@ -33,6 +33,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.untungs.nutrisport.core.navigation.Screen
 import io.untungs.nutrisport.core.ui.Alpha
 import io.untungs.nutrisport.core.ui.icons.Close
@@ -53,7 +54,10 @@ fun HomeGraphRoute(
     onProfileClick: () -> Unit,
     onAdminPanelClick: () -> Unit,
 ) {
+    val isAdmin by viewModel.isAdmin.collectAsStateWithLifecycle()
+
     HomeGraphScreen(
+        isAdmin = isAdmin,
         onProfileClick = onProfileClick,
         onAdminPanelClick = onAdminPanelClick,
         onSignOutClick = viewModel::signOut,
@@ -62,9 +66,10 @@ fun HomeGraphRoute(
 
 @Composable
 fun HomeGraphScreen(
+    isAdmin: Boolean = false,
     onProfileClick: () -> Unit,
     onAdminPanelClick: () -> Unit,
-    onSignOutClick: () -> Unit
+    onSignOutClick: () -> Unit,
 ) {
     BoxWithConstraints(
         modifier = Modifier.background(MaterialTheme.colorScheme.surfaceBright)
@@ -87,6 +92,7 @@ fun HomeGraphScreen(
             modifier = Modifier
                 .width(offsetValue)
                 .safeDrawingPadding(),
+            isAdmin = isAdmin,
             onProfileClick = onProfileClick,
             onSignOutClick = onSignOutClick,
             onAdminPanelClick = onAdminPanelClick,
@@ -107,8 +113,7 @@ fun HomeGraphScreen(
         ) {
             ContentScaffold(
                 drawerState = drawerState,
-                onMenuClick = { drawerState = drawerState.toggle() }
-            )
+            ) { drawerState = drawerState.toggle() }
         }
     }
 }
@@ -191,9 +196,10 @@ private fun ContentScaffold(
 private fun HomeGraphScreenPreview() {
     NutriSportTheme(darkTheme = true) {
         HomeGraphScreen(
+            isAdmin = true,
             onProfileClick = {},
             onAdminPanelClick = {},
-            onSignOutClick = {}
+            onSignOutClick = {},
         )
     }
 }
