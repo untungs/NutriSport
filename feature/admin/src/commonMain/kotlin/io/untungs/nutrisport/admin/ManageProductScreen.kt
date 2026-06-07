@@ -8,12 +8,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,13 +34,16 @@ import io.untungs.nutrisport.admin.view.ManageProductForm
 import io.untungs.nutrisport.admin.view.ManageProductFormAction
 import io.untungs.nutrisport.core.domain.model.ProductCategory
 import io.untungs.nutrisport.core.domain.util.DataState
+import io.untungs.nutrisport.core.ui.component.CustomAlertDialog
 import io.untungs.nutrisport.core.ui.component.CustomProgressIndicator
 import io.untungs.nutrisport.core.ui.component.InfoCard
 import io.untungs.nutrisport.core.ui.component.PrimaryButton
 import io.untungs.nutrisport.core.ui.component.PrimaryTopAppBar
 import io.untungs.nutrisport.core.ui.icons.Check
+import io.untungs.nutrisport.core.ui.icons.Delete
 import io.untungs.nutrisport.core.ui.icons.Icons
 import io.untungs.nutrisport.core.ui.icons.Plus
+import io.untungs.nutrisport.core.ui.icons.VerticalMenu
 import io.untungs.nutrisport.core.ui.theme.NutriSportTheme
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -62,7 +75,10 @@ fun ManageProductRoute(
         action = viewModel,
         onBackClick = { viewModel.cancelEdit() },
         onImageClick = { photoPicker.open() },
-        onSubmitClick = { viewModel.submitProduct() }
+        onSubmitClick = { viewModel.submitProduct() },
+        onDeleteClick = { viewModel.toggleDeleteConfirmation(true) },
+        onConfirmDelete = { viewModel.deleteProduct() },
+        onDismissDelete = { viewModel.toggleDeleteConfirmation(false) }
     )
 }
 
@@ -73,12 +89,52 @@ private fun ManageProductScreen(
     onBackClick: () -> Unit,
     onImageClick: () -> Unit,
     onSubmitClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onConfirmDelete: () -> Unit,
+    onDismissDelete: () -> Unit,
 ) {
+    var showMenu by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             PrimaryTopAppBar(
                 title = if (state.isNewProduct) "New Product" else "Edit Product",
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                actions = {
+                    if (!state.isNewProduct) {
+                        IconButton(onClick = { showMenu = true }) {
+                            Icon(
+                                imageVector = Icons.VerticalMenu,
+                                contentDescription = "More"
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = "Delete",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        modifier = Modifier.size(20.dp),
+                                        imageVector = Icons.Delete,
+                                        contentDescription = null
+                                    )
+                                },
+                                onClick = {
+                                    showMenu = false
+                                    onDeleteClick()
+                                }
+                            )
+                        }
+                    }
+                }
             )
         },
         contentWindowInsets = WindowInsets.safeDrawing
@@ -89,6 +145,22 @@ private fun ManageProductScreen(
                 .padding(innerPadding),
             contentAlignment = Alignment.Center
         ) {
+            if (state.showDeleteConfirmation) {
+                CustomAlertDialog(
+                    onDismissRequest = onDismissDelete,
+                    title = "Delete Product",
+                    text = {
+                        Text(
+                            text = "Are you sure you want to delete this product? This action cannot be undone.",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    },
+                    confirmButtonText = "Delete",
+                    onConfirmClick = onConfirmDelete,
+                    onDismissClick = onDismissDelete
+                )
+            }
+
             when (val productState = state.product) {
                 is DataState.Loading -> {
                     CustomProgressIndicator()
@@ -163,7 +235,10 @@ private fun ManageProductScreenPreview() {
             action = action,
             onBackClick = {},
             onImageClick = {},
-            onSubmitClick = {}
+            onSubmitClick = {},
+            onDeleteClick = {},
+            onConfirmDelete = {},
+            onDismissDelete = {}
         )
     }
 }

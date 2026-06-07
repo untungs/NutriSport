@@ -38,6 +38,16 @@ class ProductAdminRepositoryImpl : ProductAdminRepository {
             .catch { throw it.toDomainException() }
     }
 
+    override suspend fun deleteProduct(productId: String) {
+        try {
+            Firebase.firestore.collection(PRODUCT_COLLECTION)
+                .document(productId)
+                .delete()
+        } catch (e: Exception) {
+            throw e.toDomainException()
+        }
+    }
+
     companion object {
         private const val PRODUCT_COLLECTION = "product"
     }

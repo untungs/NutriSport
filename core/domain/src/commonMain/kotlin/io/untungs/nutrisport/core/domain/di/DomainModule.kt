@@ -10,6 +10,7 @@ import io.untungs.nutrisport.core.domain.usecase.ObserveAuthStateUseCase
 import io.untungs.nutrisport.core.domain.usecase.SignOutUseCase
 import io.untungs.nutrisport.core.domain.usecase.UploadProductImageUseCase
 import io.untungs.nutrisport.core.domain.usecase.DeleteProductImageUseCase
+import io.untungs.nutrisport.core.domain.usecase.DeleteProductUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -24,4 +25,5 @@ val domainModule = module {
     factoryOf(::SignOutUseCase)
     factoryOf(::UploadProductImageUseCase)
     factoryOf(::DeleteProductImageUseCase)
+    factoryOf(::DeleteProductUseCase)
 }
