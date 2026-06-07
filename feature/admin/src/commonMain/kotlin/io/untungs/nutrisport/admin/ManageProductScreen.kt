@@ -37,7 +37,6 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ManageProductRoute(
-    productId: String?,
     viewModel: ManageProductViewModel = koinViewModel(),
     navigateBack: () -> Unit,
 ) {
@@ -50,11 +49,7 @@ fun ManageProductRoute(
         }
     }
 
-    LaunchedEffect(productId) {
-        if (!productId.isNullOrBlank()) {
-            viewModel.fetchProduct(productId)
-        }
-
+    LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
                 ManageProductEvent.NavigateBack -> navigateBack()
@@ -65,7 +60,6 @@ fun ManageProductRoute(
     ManageProductScreen(
         state = state,
         action = viewModel,
-        isNewProduct = productId.isNullOrBlank(),
         onBackClick = { viewModel.cancelEdit() },
         onImageClick = { photoPicker.open() },
         onSubmitClick = { viewModel.submitProduct() }
@@ -76,7 +70,6 @@ fun ManageProductRoute(
 private fun ManageProductScreen(
     state: ManageProductState,
     action: ManageProductFormAction,
-    isNewProduct: Boolean,
     onBackClick: () -> Unit,
     onImageClick: () -> Unit,
     onSubmitClick: () -> Unit,
@@ -84,7 +77,7 @@ private fun ManageProductScreen(
     Scaffold(
         topBar = {
             PrimaryTopAppBar(
-                title = if (isNewProduct) "New Product" else "Edit Product",
+                title = if (state.isNewProduct) "New Product" else "Edit Product",
                 onBackClick = onBackClick
             )
         },
@@ -110,7 +103,7 @@ private fun ManageProductScreen(
                 }
 
                 is DataState.Success -> {
-                    if (productState.data == null && !isNewProduct) {
+                    if (productState.data == null && !state.isNewProduct) {
                         InfoCard(
                             modifier = Modifier.padding(24.dp),
                             title = "Oops!",
@@ -134,8 +127,8 @@ private fun ManageProductScreen(
                             PrimaryButton(
                                 modifier = Modifier.fillMaxWidth()
                                     .padding(top = 24.dp),
-                                text = if (isNewProduct) "Add New Product" else "Update",
-                                icon = if (isNewProduct) Icons.Plus else Icons.Check,
+                                text = if (state.isNewProduct) "Add New Product" else "Update",
+                                icon = if (state.isNewProduct) Icons.Plus else Icons.Check,
                                 isLoading = state.isSubmitting,
                                 enabled = state.formState.isFormValid,
                                 onClick = onSubmitClick
@@ -168,7 +161,6 @@ private fun ManageProductScreenPreview() {
         ManageProductScreen(
             state = ManageProductState(),
             action = action,
-            isNewProduct = true,
             onBackClick = {},
             onImageClick = {},
             onSubmitClick = {}
