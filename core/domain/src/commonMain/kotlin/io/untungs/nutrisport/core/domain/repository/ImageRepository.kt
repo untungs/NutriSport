@@ -4,7 +4,7 @@ interface ImageRepository {
     /**
      * Uploads an image to the storage and returns the URL.
      */
-    suspend fun uploadProductImage(productId: String, bytes: ByteArray): Result<String>
+    suspend fun uploadProductImage(productId: String, bytes: ByteArray): String
     
-    suspend fun deleteProductImage(url: String): Result<Unit>
+    suspend fun deleteProductImage(url: String)
 }

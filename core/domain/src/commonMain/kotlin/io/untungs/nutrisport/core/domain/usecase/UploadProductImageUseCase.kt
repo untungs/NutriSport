@@ -6,6 +6,8 @@ class UploadProductImageUseCase(
     private val repository: ImageRepository
 ) {
     suspend operator fun invoke(productId: String, bytes: ByteArray): Result<String> {
-        return repository.uploadProductImage(productId, bytes)
+        return runCatching {
+            repository.uploadProductImage(productId, bytes)
+        }
     }
 }

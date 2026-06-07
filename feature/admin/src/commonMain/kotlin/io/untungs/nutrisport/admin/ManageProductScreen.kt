@@ -23,6 +23,7 @@ import io.untungs.nutrisport.admin.util.PhotoPicker
 import io.untungs.nutrisport.admin.view.ManageProductForm
 import io.untungs.nutrisport.admin.view.ManageProductFormAction
 import io.untungs.nutrisport.core.domain.model.ProductCategory
+import io.untungs.nutrisport.core.domain.util.DataState
 import io.untungs.nutrisport.core.ui.component.CustomProgressIndicator
 import io.untungs.nutrisport.core.ui.component.InfoCard
 import io.untungs.nutrisport.core.ui.component.PrimaryButton
@@ -95,43 +96,51 @@ private fun ManageProductScreen(
                 .padding(innerPadding),
             contentAlignment = Alignment.Center
         ) {
-            when {
-                state.isLoading -> {
+            when (val productState = state.product) {
+                is DataState.Loading -> {
                     CustomProgressIndicator()
                 }
 
-                state.errorMessage.isNotBlank() -> {
+                is DataState.Error -> {
                     InfoCard(
                         modifier = Modifier.padding(24.dp),
                         title = "Oops!",
-                        subtitle = state.errorMessage
+                        subtitle = productState.exception.message ?: "Something went wrong"
                     )
                 }
 
-                else -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .padding(horizontal = 24.dp, vertical = 12.dp)
-                    ) {
-                        ManageProductForm(
-                            state = state.formState,
-                            action = action,
-                            onImageClick = onImageClick
+                is DataState.Success -> {
+                    if (productState.data == null && !isNewProduct) {
+                        InfoCard(
+                            modifier = Modifier.padding(24.dp),
+                            title = "Oops!",
+                            subtitle = "Product not found"
                         )
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                                .padding(horizontal = 24.dp, vertical = 12.dp)
+                        ) {
+                            ManageProductForm(
+                                state = state.formState,
+                                action = action,
+                                onImageClick = onImageClick
+                            )
 
-                        Spacer(modifier = Modifier.weight(1f))
+                            Spacer(modifier = Modifier.weight(1f))
 
-                        PrimaryButton(
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(top = 24.dp),
-                            text = if (isNewProduct) "Add New Product" else "Update",
-                            icon = if (isNewProduct) Icons.Plus else Icons.Check,
-                            isLoading = state.isSubmitting,
-                            enabled = state.formState.isFormValid,
-                            onClick = onSubmitClick
-                        )
+                            PrimaryButton(
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(top = 24.dp),
+                                text = if (isNewProduct) "Add New Product" else "Update",
+                                icon = if (isNewProduct) Icons.Plus else Icons.Check,
+                                isLoading = state.isSubmitting,
+                                enabled = state.formState.isFormValid,
+                                onClick = onSubmitClick
+                            )
+                        }
                     }
                 }
             }

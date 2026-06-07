@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.untungs.nutrisport.admin.view.ManageProductFormAction
 import io.untungs.nutrisport.admin.view.ManageProductFormState
+import io.untungs.nutrisport.core.domain.model.Product
 import io.untungs.nutrisport.core.domain.model.ProductCategory
 import io.untungs.nutrisport.core.domain.usecase.GetProductUseCase
 import io.untungs.nutrisport.core.domain.usecase.SubmitProductUseCase
 import io.untungs.nutrisport.core.domain.usecase.UploadProductImageUseCase
 import io.untungs.nutrisport.core.domain.usecase.DeleteProductImageUseCase
+import io.untungs.nutrisport.core.domain.util.DataState
 import io.untungs.nutrisport.core.ui.AppMessageManager
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,10 +23,9 @@ import kotlinx.coroutines.launch
 import kotlin.time.Clock
 
 data class ManageProductState(
+    val product: DataState<Product?> = DataState.Success(null),
     val formState: ManageProductFormState = ManageProductFormState(),
-    val isLoading: Boolean = false,
     val isSubmitting: Boolean = false,
-    val errorMessage: String = ""
 )
 
 sealed interface ManageProductEvent {
@@ -47,23 +48,13 @@ class ManageProductViewModel(
 
     fun fetchProduct(productId: String) {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, errorMessage = "") }
+            getProductUseCase(productId).collect { dataState ->
+                val formState = dataState.getOrNull()?.let {
+                    ManageProductFormState.fromProduct(it)
+                }
 
-            getProductUseCase(productId).collect { product ->
-                if (product != null) {
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            formState = ManageProductFormState.fromProduct(product)
-                        )
-                    }
-                } else {
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = "Product not found"
-                        )
-                    }
+                _state.update {
+                    it.copy(product = dataState, formState = formState ?: it.formState)
                 }
             }
         }

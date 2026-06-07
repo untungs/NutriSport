@@ -2,6 +2,7 @@ package io.untungs.nutrisport.core.data.repository
 
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
+import io.untungs.nutrisport.core.data.util.toDomainException
 import io.untungs.nutrisport.core.domain.model.AuthState
 import io.untungs.nutrisport.core.domain.repository.SessionRepository
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +20,10 @@ class SessionRepositoryImpl : SessionRepository {
         }
 
     override suspend fun signOut() {
-        Firebase.auth.signOut()
+        try {
+            Firebase.auth.signOut()
+        } catch (e: Exception) {
+            throw e.toDomainException()
+        }
     }
 }

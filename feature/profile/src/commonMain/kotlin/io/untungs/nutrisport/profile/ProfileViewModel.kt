@@ -7,6 +7,7 @@ import io.untungs.nutrisport.core.domain.model.Customer
 import io.untungs.nutrisport.core.domain.model.PhoneNumber
 import io.untungs.nutrisport.core.domain.usecase.GetCustomerUseCase
 import io.untungs.nutrisport.core.domain.usecase.UpdateCustomerUseCase
+import io.untungs.nutrisport.core.domain.util.DataState
 import io.untungs.nutrisport.core.ui.AppMessageManager
 import io.untungs.nutrisport.profile.view.ProfileFormAction
 import io.untungs.nutrisport.profile.view.ProfileFormState
@@ -17,10 +18,9 @@ import kotlinx.coroutines.launch
 
 data class ProfileScreenState(
     val id: String = "",
+    val profile: DataState<Customer?> = DataState.Success(null),
     val formState: ProfileFormState = ProfileFormState(),
-    val isLoading: Boolean = false,
     val isUpdating: Boolean = false,
-    val errorMessage: String = "",
 )
 
 class ProfileViewModel(
@@ -38,33 +38,17 @@ class ProfileViewModel(
 
     private fun loadProfile() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            getCustomerUseCase().collect { dataState ->
+                val formState = dataState.getOrNull()?.let {
+                    ProfileFormState.fromCustomer(it)
+                }
 
-            getCustomerUseCase().collect { result ->
-                result.onSuccess { data ->
-                    _state.update {
-                        it.copy(
-                            id = data.id,
-                            formState = ProfileFormState(
-                                displayName = data.displayName,
-                                email = data.email,
-                                city = data.city,
-                                postalCode = data.postalCode,
-                                address = data.address,
-                                country = Country.fromDialCode(data.phoneNumber?.dialCode ?: 62),
-                                phoneNumber = data.phoneNumber?.number.orEmpty(),
-                            ),
-                            isLoading = false,
-                            errorMessage = ""
-                        )
-                    }
-                }.onFailure { exception ->
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = exception.message ?: "Failed to load profile"
-                        )
-                    }
+                _state.update {
+                    it.copy(
+                        id = dataState.getOrNull()?.id ?: it.id,
+                        profile = dataState,
+                        formState = formState ?: it.formState
+                    )
                 }
             }
         }
@@ -84,7 +68,7 @@ class ProfileViewModel(
                 address = currentState.formState.address,
                 phoneNumber = PhoneNumber(
                     dialCode = currentState.formState.country.dialCode,
-                    number = currentState.formState.phoneNumber
+                    number = currentState.formState.phoneNumber,
                 )
             )
 
@@ -99,26 +83,30 @@ class ProfileViewModel(
     }
 
     override fun onDisplayNameChange(value: String) {
-        _state.update { it.copy(formState = it.formState.copy(displayName = value)) }
+        updateFormState { it.copy(displayName = value) }
     }
 
     override fun onCityChange(value: String) {
-        _state.update { it.copy(formState = it.formState.copy(city = value)) }
+        updateFormState { it.copy(city = value) }
     }
 
     override fun onPostalCodeChange(value: Int?) {
-        _state.update { it.copy(formState = it.formState.copy(postalCode = value)) }
+        updateFormState { it.copy(postalCode = value) }
     }
 
     override fun onAddressChange(value: String) {
-        _state.update { it.copy(formState = it.formState.copy(address = value)) }
+        updateFormState { it.copy(address = value) }
     }
 
     override fun onCountrySelected(value: Country) {
-        _state.update { it.copy(formState = it.formState.copy(country = value)) }
+        updateFormState { it.copy(country = value) }
     }
 
     override fun onPhoneNumberChange(value: String) {
-        _state.update { it.copy(formState = it.formState.copy(phoneNumber = value)) }
+        updateFormState { it.copy(phoneNumber = value) }
+    }
+
+    private fun updateFormState(update: (ProfileFormState) -> ProfileFormState) {
+        _state.update { it.copy(formState = update(it.formState)) }
     }
 }

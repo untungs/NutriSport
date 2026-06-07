@@ -19,6 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.untungs.nutrisport.admin.view.ProductCard
+import io.untungs.nutrisport.core.domain.model.Product
+import io.untungs.nutrisport.core.domain.util.DataState
 import io.untungs.nutrisport.core.ui.component.CustomProgressIndicator
 import io.untungs.nutrisport.core.ui.component.InfoCard
 import io.untungs.nutrisport.core.ui.component.PrimaryTopAppBar
@@ -45,7 +47,7 @@ fun AdminPanelRoute(
 
 @Composable
 private fun AdminPanelScreen(
-    state: AdminPanelState,
+    state: DataState<List<Product>>,
     navigateBack: () -> Unit,
     navigateToManageProduct: (String?) -> Unit,
 ) {
@@ -76,30 +78,41 @@ private fun AdminPanelScreen(
                 .padding(innerPadding),
             contentAlignment = Alignment.Center
         ) {
-            when {
-                state.isLoading -> {
+            when (state) {
+                is DataState.Loading -> {
                     CustomProgressIndicator()
                 }
 
-                state.products.isEmpty() -> {
+                is DataState.Error -> {
                     InfoCard(
                         modifier = Modifier.padding(24.dp),
-                        title = "No Products",
-                        subtitle = "Click the + button to add your first product."
+                        title = "Oops!",
+                        subtitle = state.exception.message ?: "Something went wrong"
                     )
                 }
 
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(start = 12.dp, top = 12.dp, end = 12.dp, bottom = 80.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        items(state.products) { product ->
-                            ProductCard(
-                                product = product,
-                                onClick = { navigateToManageProduct(product.id) }
-                            )
+                is DataState.Success -> {
+                    val products = state.data
+                    if (products.isEmpty()) {
+                        InfoCard(
+                            modifier = Modifier.padding(24.dp),
+                            title = "No Products",
+                            subtitle = "Click the + button to add your first product."
+                        )
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(
+                                start = 12.dp, top = 12.dp, end = 12.dp, bottom = 80.dp
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            items(products) { product ->
+                                ProductCard(
+                                    product = product,
+                                    onClick = { navigateToManageProduct(product.id) }
+                                )
+                            }
                         }
                     }
                 }
@@ -113,7 +126,7 @@ private fun AdminPanelScreen(
 private fun AdminPanelScreenPreview() {
     NutriSportTheme {
         AdminPanelScreen(
-            state = AdminPanelState(isLoading = false),
+            state = DataState.Loading,
             navigateBack = {},
             navigateToManageProduct = {}
         )

@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import io.untungs.nutrisport.core.domain.model.Country
+import io.untungs.nutrisport.core.domain.model.Customer
 import io.untungs.nutrisport.core.ui.component.CustomTextField
 
 data class ProfileFormState(
@@ -43,6 +44,18 @@ data class ProfileFormState(
                 isPostalCodeValid &&
                 isAddressValid &&
                 isPhoneNumberValid
+
+    companion object {
+        fun fromCustomer(customer: Customer) = ProfileFormState(
+            displayName = customer.displayName,
+            email = customer.email,
+            city = customer.city,
+            postalCode = customer.postalCode,
+            address = customer.address,
+            country = Country.fromDialCode(customer.phoneNumber?.dialCode ?: 62),
+            phoneNumber = customer.phoneNumber?.number.orEmpty(),
+        )
+    }
 }
 
 interface ProfileFormAction {
