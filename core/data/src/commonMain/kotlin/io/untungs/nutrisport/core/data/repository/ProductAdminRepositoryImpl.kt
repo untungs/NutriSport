@@ -1,6 +1,7 @@
 package io.untungs.nutrisport.core.data.repository
 
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.firestore
 import io.untungs.nutrisport.core.data.util.toDomainException
 import io.untungs.nutrisport.core.domain.model.Product
@@ -23,6 +24,7 @@ class ProductAdminRepositoryImpl : ProductAdminRepository {
 
     override fun getProducts(): Flow<List<Product>> {
         return Firebase.firestore.collection(PRODUCT_COLLECTION)
+            .orderBy("createdAt", Direction.DESCENDING)
             .snapshots()
             .map { it.documents.map { snapshot -> snapshot.data<Product>() } }
             .catch { throw it.toDomainException() }
