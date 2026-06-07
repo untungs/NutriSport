@@ -6,7 +6,10 @@ class DeleteProductImageUseCase(
     private val repository: ImageRepository
 ) {
     suspend operator fun invoke(url: String): Result<Unit> {
-        if (url.isBlank()) return Result.success(Unit)
-        return repository.deleteProductImage(url)
+        return runCatching {
+            if (url.isNotBlank()) {
+                repository.deleteProductImage(url)
+            }
+        }
     }
 }

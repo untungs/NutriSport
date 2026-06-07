@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.untungs.nutrisport.core.domain.model.Country
+import io.untungs.nutrisport.core.domain.util.DataState
 import io.untungs.nutrisport.core.ui.component.CustomProgressIndicator
 import io.untungs.nutrisport.core.ui.component.InfoCard
 import io.untungs.nutrisport.core.ui.component.PrimaryButton
@@ -69,18 +70,20 @@ private fun ProfileScreen(
                 .padding(innerPadding),
             contentAlignment = Alignment.Center
         ) {
-            when {
-                state.isLoading -> {
+            when (val profileState = state.profile) {
+                is DataState.Loading -> {
                     CustomProgressIndicator()
                 }
-                state.errorMessage.isNotBlank() -> {
+
+                is DataState.Error -> {
                     InfoCard(
                         modifier = Modifier.padding(24.dp),
                         title = "Oops!",
-                        subtitle = state.errorMessage
+                        subtitle = profileState.exception.message ?: "Failed to load profile"
                     )
                 }
-                else -> {
+
+                is DataState.Success -> {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
