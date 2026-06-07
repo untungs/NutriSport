@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import io.untungs.nutrisport.admin.AdminPanelRoute
 import io.untungs.nutrisport.admin.ManageProductRoute
 import io.untungs.nutrisport.auth.AuthRoute
@@ -51,9 +50,7 @@ fun SetupNavGraph(startDestination: Screen = Screen.Auth) {
             )
         }
         composable<Screen.ManageProduct> {
-            val productId = it.toRoute<Screen.ManageProduct>().productId
             ManageProductRoute(
-                productId = productId,
                 navigateBack = {
                     navController.popBackStack()
                 }

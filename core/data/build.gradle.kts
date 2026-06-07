@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     id("nutrisport.kmp.library")
     alias(libs.plugins.buildkonfig)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 val localProperties = Properties().apply {
@@ -36,6 +37,7 @@ kotlin {
         commonMain.dependencies {
             implementation(project.dependencies.platform(libs.supabase.bom))
             implementation(projects.core.domain)
+            implementation(libs.kotlinx.serialization.json)
             implementation(libs.firebase.auth)
             implementation(libs.firebase.firestore)
             implementation(libs.supabase.storage)

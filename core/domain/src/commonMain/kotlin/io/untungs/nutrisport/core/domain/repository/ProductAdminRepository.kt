@@ -10,4 +10,6 @@ interface ProductAdminRepository {
     fun getProducts(): Flow<List<Product>>
 
     fun getProduct(productId: String): Flow<Product?>
+
+    suspend fun deleteProduct(productId: String)
 }

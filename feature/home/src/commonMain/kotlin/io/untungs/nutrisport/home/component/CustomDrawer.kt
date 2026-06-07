@@ -19,6 +19,7 @@ import io.untungs.nutrisport.home.domain.DrawerItem
 @Composable
 fun CustomDrawer(
     modifier: Modifier = Modifier,
+    isAdmin: Boolean = false,
     onProfileClick: () -> Unit = {},
     onContactUsClick: () -> Unit = {},
     onSignOutClick: () -> Unit = {},
@@ -68,7 +69,9 @@ fun CustomDrawer(
             }
         }
 
-        DrawerItemCard(DrawerItem.Admin, onAdminPanelClick)
+        if (isAdmin) {
+            DrawerItemCard(DrawerItem.Admin, onAdminPanelClick)
+        }
         Spacer(modifier = Modifier.height(24.dp))
     }
 }

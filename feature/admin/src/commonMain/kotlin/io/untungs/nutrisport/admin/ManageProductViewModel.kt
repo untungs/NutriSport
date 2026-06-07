@@ -1,7 +1,9 @@
 package io.untungs.nutrisport.admin
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import io.untungs.nutrisport.admin.view.ManageProductFormAction
 import io.untungs.nutrisport.admin.view.ManageProductFormState
 import io.untungs.nutrisport.core.domain.model.Product
@@ -10,7 +12,9 @@ import io.untungs.nutrisport.core.domain.usecase.GetProductUseCase
 import io.untungs.nutrisport.core.domain.usecase.SubmitProductUseCase
 import io.untungs.nutrisport.core.domain.usecase.UploadProductImageUseCase
 import io.untungs.nutrisport.core.domain.usecase.DeleteProductImageUseCase
+import io.untungs.nutrisport.core.domain.usecase.DeleteProductUseCase
 import io.untungs.nutrisport.core.domain.util.DataState
+import io.untungs.nutrisport.core.navigation.Screen
 import io.untungs.nutrisport.core.ui.AppMessageManager
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +30,8 @@ data class ManageProductState(
     val product: DataState<Product?> = DataState.Success(null),
     val formState: ManageProductFormState = ManageProductFormState(),
     val isSubmitting: Boolean = false,
+    val isNewProduct: Boolean = true,
+    val showDeleteConfirmation: Boolean = false,
 )
 
 sealed interface ManageProductEvent {
@@ -33,8 +39,10 @@ sealed interface ManageProductEvent {
 }
 
 class ManageProductViewModel(
+    savedStateHandle: SavedStateHandle,
     val submitProductUseCase: SubmitProductUseCase,
     val getProductUseCase: GetProductUseCase,
+    val deleteProductUseCase: DeleteProductUseCase,
     val uploadProductImageUseCase: UploadProductImageUseCase,
     val deleteProductImageUseCase: DeleteProductImageUseCase,
     val appMessageManager: AppMessageManager,
@@ -46,7 +54,15 @@ class ManageProductViewModel(
     private val _event = MutableSharedFlow<ManageProductEvent>()
     val event: SharedFlow<ManageProductEvent> = _event.asSharedFlow()
 
-    fun fetchProduct(productId: String) {
+    init {
+        val productId = savedStateHandle.toRoute<Screen.ManageProduct>().productId
+        if (productId != null) {
+            _state.update { it.copy(isNewProduct = false) }
+            fetchProduct(productId)
+        }
+    }
+
+    private fun fetchProduct(productId: String) {
         viewModelScope.launch {
             getProductUseCase(productId).collect { dataState ->
                 val formState = dataState.getOrNull()?.let {
@@ -87,6 +103,35 @@ class ManageProductViewModel(
         }
     }
 
+    fun deleteProduct() {
+        viewModelScope.launch {
+            _state.update { it.copy(isSubmitting = true, showDeleteConfirmation = false) }
+
+            val productId = state.value.formState.id
+            val thumbnail = state.value.formState.thumbnail
+            val result = deleteProductUseCase(productId)
+
+            result.onSuccess {
+                _state.update { it.copy(isSubmitting = false) }
+                
+                // Delete image from storage
+                if (thumbnail.isNotBlank()) {
+                    deleteProductImageUseCase(thumbnail)
+                }
+
+                appMessageManager.showSuccess("Product successfully deleted!")
+                _event.emit(ManageProductEvent.NavigateBack)
+            }.onFailure { e ->
+                _state.update { it.copy(isSubmitting = false) }
+                appMessageManager.showError(e.message ?: "Failed to delete product")
+            }
+        }
+    }
+
+    fun toggleDeleteConfirmation(show: Boolean) {
+        _state.update { it.copy(showDeleteConfirmation = show) }
+    }
+
     fun uploadImage(bytes: ByteArray) {
         viewModelScope.launch {
             updateFormState { it.copy(isImageUploading = true) }
@@ -98,6 +143,7 @@ class ManageProductViewModel(
                 updateFormState {
                     it.copy(thumbnail = url, newThumbnail = url, isImageUploading = false)
                 }
+                appMessageManager.showSuccess("Thumbnail uploaded successfully!")
                 // Delete previous newThumbnail
                 deleteProductImageUseCase(stateBeforeUpload.newThumbnail)
             }.onFailure { e ->

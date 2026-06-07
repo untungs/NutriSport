@@ -1,6 +1,7 @@
 package io.untungs.nutrisport.core.domain.model
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class Customer(
@@ -12,6 +13,7 @@ data class Customer(
     val address: String? = null,
     val phoneNumber: PhoneNumber? = null,
     val cart: List<CartItem> = emptyList(),
+    @Transient
     val isAdmin: Boolean = false
 )
 
